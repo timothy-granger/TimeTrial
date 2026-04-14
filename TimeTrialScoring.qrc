@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/edit_add-256.png</file>
+        <file>images/edit_remove-256.png</file>
+        <file>images/edit-256.png</file>
+        <file>images/player_time-256.png</file>
+        <file>images/start.png</file>
+        <file>images/stop.png</file>
+        <file>images/fileexport-256.png</file>
+        <file>images/fileimport-256.png</file>
+        <file>images/compfile-256.png</file>
+        <file>images/GreenvilleSpinnersNavyGreen.png</file>
+        <file>images/GreenvilleSpinners.4.whit.png</file>
+    </qresource>
+</RCC>

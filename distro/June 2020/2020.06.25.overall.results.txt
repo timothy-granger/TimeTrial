@@ -1,0 +1,56 @@
+  1)  00:20:37.4  Conor Schunk              Men (P/1/2/3)     
+  2)  00:21:17.9  Brooks Wienke             Men (P/1/2/3)     
+  3)  00:21:41.8  Caleb Smith               Men (P/1/2/3)     
+  4)  00:22:34.5  Thomas Skelton            Men (P/1/2/3)     
+  5)  00:22:58.2  Ricky Flynn               Men (P/1/2/3)     
+  6)  00:23:08.3  Schott Schumate           Men (P/1/2/3)     
+  7)  00:23:12.1  James Martin              Master 60+ - Men  
+  8)  00:24:11.2  Thomas Fleckenstein       Mercyx - Men      
+  9)  00:24:29.4  Luke Barnett              Mercyx - Men      
+ 10)  00:24:43.5  David Halle               Men (P/1/2/3)     
+ 11)  00:24:49.4  Tony Herring              Master 60+ - Men  
+ 12)  00:24:53.0  Bill Radler               Master 60+ - Men  
+ 13)  00:24:59.6  Matt Pryor                Men (P/1/2/3)     
+ 14)  00:25:08.0  Chris Campen              Men (4/5/U)       
+ 15)  00:25:09.5  Pat Norcia                Master 50+ - Men  
+ 16)  00:25:13.0  George Moser              Master 50+ - Men  
+ 17)  00:25:23.1  Neil Tabor                Men (4/5/U)       
+ 18)  00:25:25.1  Garrett Molzer            Men (4/5/U)       
+ 19)  00:25:29.0  Brian Thompson            Men (4/5/U)       
+ 20)  00:25:29.0  David Downing             Mercyx - Men      
+ 21)  00:25:46.2  Manuel Lambert            Men (4/5/U)       
+ 22)  00:25:49.4  Joel Collier              Men (4/5/U)       
+ 23)  00:26:04.0  Peter Brown               Master 50+ - Men  
+ 24)  00:26:23.7  Patrick Vanderwerf        Master 50+ - Men  
+ 25)  00:26:29.2  Beckett Black             Junior (M)        
+ 26)  00:26:33.1  Sammy Clary               Mercyx - Men      
+ 27)  00:26:44.9  Lou Cataland              Mercyx - Men      
+ 28)  00:26:51.6  Alex Apanovic             Men (4/5/U)       
+ 29)  00:26:54.6  Jeremy Walton             Mercyx - Men      
+ 30)  00:26:54.6  Korey Witt                Mercyx - Men      
+ 31)  00:27:03.4  Gray Barnett              Junior (M)        
+ 32)  00:27:04.9  Tami Leonhardt            Women (4/U)       
+ 33)  00:27:05.8  Ken McCall                Master 50+ - Men  
+ 34)  00:27:19.9  Michael Meints            Men (4/5/U)       
+ 35)  00:27:28.5  Kristina Mears            Women (P/1/2/3)   
+ 36)  00:27:31.4  Julia Norcia              Women (4/U)       
+ 37)  00:27:34.5  Laura Calvin              Mercyx - Women    
+ 38)  00:27:36.4  Eric Livingston           Mercyx - Men      
+ 39)  00:27:43.0  Brian Gardner             Men (4/5/U)       
+ 40)  00:27:54.6  Greg Brown                Mercyx - Men      
+ 41)  00:28:17.1  Dave McQuaid              Master 50+ - Men  
+ 42)  00:28:21.3  Chip Palmer               Master 60+ - Men  
+ 43)  00:28:22.4  Gary Jackson              Mercyx - Men      
+ 44)  00:28:30.7  Chris Hartzler            Men (4/5/U)       
+ 45)  00:28:35.8  Bob McKee                 Master 60+ - Men  
+ 46)  00:29:11.9  ---- ----                 ----              
+ 47)  00:29:41.8  Brian Sherboneau          Mercyx - Men      
+ 48)  00:29:54.3  Barry Knight              Mercyx - Men      
+ 49)  00:29:58.5  Wesley Baker              Men (4/5/U)       
+ 50)  00:30:04.9  Joe Pomeroy               Hand Cycle (M)    
+ 51)  00:30:36.5  Rob Bailey                Mercyx - Men      
+ 52)  00:30:45.9  Kathryn Ambrose           Women (4/U)       
+ 53)  00:30:51.9  Matthew Roland            Men (4/5/U)       
+ 54)  00:30:56.3  Veera Kullatham           Women (4/U)       
+ 55)  00:33:11.7  Kyle Barnett              Mercyx - Men      
+ 56)  00:34:06.2  Bill Thomson              Master 60+ - Men   

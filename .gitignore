@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# pytest
+.pytest_cache/
+
+# SQLite databases (user data, not source)
+*.db
+
+# Import review files (generated, contain user edits)
+import_review/
+.claude/
+.~lock.*
+TimeTrialScoring.pro.user

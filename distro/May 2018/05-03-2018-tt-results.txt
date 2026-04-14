@@ -1,0 +1,92 @@
+Category Results
+
+HandCycle (M)       00:34:15.165  Joe Pomeroy             
+
+Juniors             00:36:04.319  Leilani Blunt           
+Juniors             00:36:26.882  Keith Blunt             
+
+Masters 50+ - Men   00:25:11.391  Bob Chambers            
+Masters 50+ - Men   00:26:06.289  Jesse Mikell            
+Masters 50+ - Men   00:27:52.858  Chip Palmer             
+Masters 50+ - Men   00:28:16.713  Rex Morgan              
+Masters 50+ - Men   00:28:31.913  Jim Pelkie              
+Masters 50+ - Men   00:28:55.691  Glynn Clements          
+
+Men  (4/5/U)        00:23:30.724  Greg Tempel             
+Men  (4/5/U)        00:23:52.461  Mike Potter             
+Men  (4/5/U)        00:25:34.552  Garrett Molzer          
+Men  (4/5/U)        00:26:13.990  Neil Tabor              
+Men  (4/5/U)        00:26:53.511  Jeff Jordan             
+Men  (4/5/U)        00:27:03.879  Christi Britt           
+Men  (4/5/U)        00:27:12.279  Peter Pistolis          
+Men  (4/5/U)        00:27:15.917  Eric Doyle              
+Men  (4/5/U)        00:27:40.604  Russell Thompson        
+Men  (4/5/u)        00:31:57.037  David                        
+Men  (4/5/U)        00:36:29.864  Bostin Blunt            
+
+Men  (P/1/2/3)      00:23:30.433  Eric Christophersen     
+Men  (P/1/2/3)      00:24:27.730  Jeff Michenfelder                        
+
+Mercyx - Men        00:24:39.511  Luke Barnett            
+Mercyx - Men        00:25:18.292  Joel Neff               
+Mercyx - Men        00:25:25.397  Willie Fowlkes          
+Mercyx - Men        00:26:40.787  Rob Cline               
+Mercyx - Men        00:26:46.971  Graham Knight           
+Mercyx - Men        00:26:56.672  Fulton Lopez            
+Mercyx - Men        00:27:10.281  Reggie Phillips         
+Mercyx - Men        00:27:41.555  Daniel Joyal            
+Mercyx - Men        00:27:55.583  Seth Fogle              
+Mercyx - Men        00:28:39.782  Barry Knight            
+Mercyx - Men        00:29:41.913  Victor Bravo            
+Mercyx - Men        00:29:44.905  John Davidson           
+
+Mercyx - Women      00:29:44.369  Mary Clark              
+Mercyx - Women      00:29:58.343  Laura Cline             
+Mercyx - Women      00:30:46.108  Mandy Thompson          
+
+Women (4/U)         00:29:11.749  Mari Steinbach McGourn  
+Women (4/U)         00:33:21.303  Elizabeth Blunt         
+
+Women (P/1/2/3)     00:26:00.831  Kristina Mear
+          
+Overall Results
+  1)  00:23:30.433  Eric Christophersen       Menu (P/1/2/3)    
+  2)  00:23:30.724  Greg Tempel               Menu (4/5/U)      
+  3)  00:23:52.461  Mike Potter               Menu (4/5/U)      
+  4)  00:24:27.730  Jeff Michenfelder         Menu (P/1/2/3)                                            
+  5)  00:24:39.511  Luke Barnett              Mercyx - Men      
+  6)  00:25:11.391  Bob Chambers              Masters 50+ - Men 
+  7)  00:25:18.292  Joel Neff                 Mercyx - Men      
+  8)  00:25:25.397  Willie Fowlkes            Mercyx - Men      
+  9)  00:25:34.552  Garrett Molzer            Menu (4/5/U)      
+ 10)  00:26:00.831  Kristina Mears            Women (P/1/2/3)   
+ 11)  00:26:06.289  Jesse Mikell              Masters 50+ - Men 
+ 12)  00:26:13.990  Neil Tabor                Menu (4/5/U)      
+ 13)  00:26:40.787  Rob Cline                 Mercyx - Men      
+ 14)  00:26:46.971  Graham Knight             Mercyx - Men      
+ 15)  00:26:53.511  Jeff Jordan               Menu (4/5/U)      
+ 16)  00:26:56.672  Fulton Lopez              Mercyx - Men      
+ 17)  00:27:03.879  Christi Britt             Menu (4/5/U)      
+ 18)  00:27:10.281  Reggie Phillips           Mercyx - Men      
+ 19)  00:27:12.279  Peter Pistolis            Menu (4/5/U)      
+ 20)  00:27:15.917  Eric Doyle                Menu (4/5/U)      
+ 21)  00:27:40.604  Russell Thompson          Menu (4/5/U)      
+ 22)  00:27:41.555  Daniel Joyal              Mercyx - Men      
+ 23)  00:27:52.858  Chip Palmer               Masters 50+ - Men 
+ 24)  00:27:55.583  Seth Fogle                Mercyx - Men      
+ 25)  00:28:16.713  Rex Morgan                Masters 50+ - Men 
+ 26)  00:28:31.913  Jim Pelkie                Masters 50+ - Men 
+ 27)  00:28:39.782  Barry Knight              Mercyx - Men      
+ 28)  00:28:55.691  Glynn Clements            Masters 50+ - Men 
+ 29)  00:29:11.749  Mari Steinbach McGourn    Women (4/U)       
+ 30)  00:29:41.913  Victor Bravo              Mercyx - Men      
+ 31)  00:29:44.369  Mary Clark                Mercyx - Women    
+ 32)  00:29:44.905  John Davidson             Mercyx - Men      
+ 33)  00:29:58.343  Laura Cline               Mercyx - Women    
+ 34)  00:30:46.108  Mandy Thompson            Mercyx - Women    
+ 35)  00:31:57.037  David                     Men  (4/5/U)                       
+ 36)  00:33:21.303  Elizabeth Blunt           Women (4/U)       
+ 37)  00:34:15.165  Joe Pomeroy               HandCycle (M)     
+ 38)  00:36:04.319  Leilani Blunt             Juniors           
+ 39)  00:36:26.882  Keith Blunt               Juniors           
+ 40)  00:36:29.864  Bostin Blunt              Menu (4/5/U)       

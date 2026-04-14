@@ -1,0 +1,50 @@
+[race]
+timer_interval_ms = 100
+start_interval_minutes = 0.5          # 30-second gaps between riders
+countdown_sound_trigger_seconds = 11
+time_format = "hh:mm:ss.zzz"
+
+[categories]
+names = [
+    "Men (P/1/2/3)",
+    "Men (4/5/U)",
+    "Women (P/1/2/3)",
+    "Women (4/U)",
+    "Masters 50+ - Men",
+    "Masters 50+ - Women",
+    "Masters 60+ - Men",
+    "Merckx - Men",
+    "Merckx - Women",
+    "10-14 (M)",
+    "15-18 (M)",
+    "10-14 (F)",
+    "15-18 (F)",
+    "Hand Cycle (M)",
+    "Hand Cycle (W)",
+]
+
+# Categories excluded from overall results
+junior_categories = [
+    "10-14 (M)",
+    "15-18 (M)",
+    "10-14 (F)",
+    "15-18 (F)",
+]
+
+[series]
+points = [5, 4, 3, 2, 1]
+
+[display]
+starter_font_rider = 75
+starter_font_countdown = 400
+starter_font_clock = 65
+starter_font_bib = 65
+race_title = "Greenville Spinners Time Trial"              # Text shown at top of starter display (e.g. "Greenville Spinners Time Trial")
+starter_font_title = 40      # Font size for race title
+logo_image = "D:/TimeTrial_Refactor/images/GreenvilleSpinnersNavyGreen.png"              # Path to PNG logo displayed on starter display (empty = no logo)
+
+[paths]
+default_start_list = "tt-start-list.csv"
+default_finish_list = "tt-finish-list.csv"
+default_results = "tt-results.html"
+sound_file = "D:/TimeTrial_Refactor/distro/start.m4a"

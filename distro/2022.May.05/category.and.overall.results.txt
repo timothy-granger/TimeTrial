@@ -1,0 +1,95 @@
+Handcycle           00:28:57.5  Joe Pomeroy             
+
+Master 50+ - Men    00:25:14.9  David Hoenicke          
+Master 50+ - Men    00:25:43.5  Pat Norcia              
+Master 50+ - Men    00:27:36.3  Dave McQuaid            
+
+Master 50+ - Women  00:27:35.7  Julia Norcia            
+Master 50+ - Women  00:30:51.6  Michelle Edwards        
+
+Master 60+ - Men    00:23:23.0  James Martin            
+Master 60+ - Men    00:24:20.9  Bill Radler             
+Master 60+ - Men    00:24:24.1  Lamar Mauney            
+Master 60+ - Men    00:27:16.9  Tony Herring            
+Master 60+ - Men    00:27:32.4  Chip Palmer             
+Master 60+ - Men    00:28:58.4  Mike Askew              
+Master 60+ - Men    00:31:36.2  Howard Johnson          
+Master 60+ - Men    00:33:59.5  Bill Thomson            
+Master 60+ - Men    00:34:04.5  John Mikkonen           
+
+Men (4/5/U)         00:24:24.3  Neil Tabor              
+Men (4/5/U)         00:25:16.0  Gregory Tempel          
+Men (4/5/U)         00:26:10.0  Carlton Sink            
+Men (4/5/U)         00:26:10.1  Joel Collier            
+Men (4/5/U)         00:27:01.9  Kahwai Murithi          
+Men (4/5/U)         00:27:40.2  Brian Gardner           
+
+Men (P/1/2/3)       00:20:36.7  Zach Berend             
+Men (P/1/2/3)       00:21:30.0  Ben Mcconchie           
+Men (P/1/2/3)       00:21:35.2  Caleb Smith             
+Men (P/1/2/3)       00:21:37.4  Gray Barnett            
+Men (P/1/2/3)       00:22:38.2  Max Abner               
+Men (P/1/2/3)       00:23:35.6  Alvaro Velez            
+Men (P/1/2/3)       00:26:38.4  Jeff Michendfelder      
+
+Merckx - Men        00:24:10.8  Luke Barnett            
+Merckx - Men        00:26:53.6  Clemente Patrick        
+Merckx - Men        00:29:01.7  John Koenitzer          
+Merckx - Men        00:29:57.2  Kevin Martin            
+Merckx - Men        00:30:38.4  Austin Kocchi           
+Merckx - Men        00:35:11.9  Arthur Street           
+
+Merckx - Women      00:27:39.7  Laura Calvin            
+Merckx - Women      00:27:52.6  Kathleen Mitchell       
+Merckx - Women      00:30:14.3  Anne Roussy             
+Merckx - Women      00:30:47.8  Danette Everhart        
+Merckx - Women      00:36:52.3  Ruthanne Waite          
+Merckx - Women      00:38:45.8  Lauren Harper           
+
+
+Women (4/5/U)       00:28:12.9  Tami Leonhardt          
+Women (4/5/U)       00:35:15.4  Anna Brunton            
+
+Overall Results
+  1)  00:20:36.7  Zach Berend               Men (P/1/2/3)     
+  2)  00:21:30.0  Ben Mcconchie             Men (P/1/2/3)     
+  3)  00:21:35.2  Caleb Smith               Men (P/1/2/3)     
+  4)  00:21:37.4  Gray Barnett              Men (P/1/2/3)     
+  5)  00:22:38.2  Max Abner                 Men (P/1/2/3)     
+  6)  00:23:23.0  James Martin              Master 60+ - Men  
+  7)  00:23:35.6  Alvaro Velez              Men (P/1/2/3)     
+  8)  00:24:10.8  Luke Barnett              Merckx - Men      
+  9)  00:24:20.9  Bill Radler               Master 60+ - Men  
+ 10)  00:24:24.1  Lamar Mauney              Master 60+ - Men  
+ 11)  00:24:24.3  Neil Tabor                Men (4/5/U)       
+ 12)  00:25:14.9  David Hoenicke            Master 50+ - Men  
+ 13)  00:25:16.0  Gregory Tempel            Men (4/5/U)       
+ 14)  00:25:43.5  Pat Norcia                Master 50+ - Men  
+ 15)  00:26:10.0  Carlton Sink              Men (4/5/U)       
+ 16)  00:26:10.1  Joel Collier              Men (4/5/U)       
+ 17)  00:26:38.4  Jeff Michendfelder        Men (P/1/2/3)     
+ 18)  00:26:53.6  Clemente Patrick          Merckx - Men      
+ 19)  00:27:01.9  Kahwai Murithi            Men (4/5/U)       
+ 20)  00:27:16.9  Tony Herring              Master 60+ - Men  
+ 21)  00:27:32.4  Chip Palmer               Master 60+ - Men  
+ 22)  00:27:35.7  Julia Norcia              Master 50+ - Women
+ 23)  00:27:36.3  Dave McQuaid              Master 50+ - Men  
+ 24)  00:27:39.7  Laura Calvin              Merckx - Women    
+ 25)  00:27:40.2  Brian Gardner             Men (4/5/U)       
+ 26)  00:27:52.6  Kathleen Mitchell         Merckx - Women    
+ 27)  00:28:12.9  Tami Leonhardt            Women (4/5/U)     
+ 28)  00:28:57.5  Joe Pomeroy               Handcycle         
+ 29)  00:28:58.4  Mike Askew                Master 60+ - Men  
+ 30)  00:29:01.7  John Koenitzer            Merckx - Men      
+ 31)  00:29:57.2  Kevin Martin              Merckx - Men      
+ 32)  00:30:14.3  Anne Roussy               Merckx - Women    
+ 33)  00:30:38.4  Austin Kocchi             Merckx - Men      
+ 34)  00:30:47.8  Danette Everhart          Merckx - Women    
+ 35)  00:30:51.6  Michelle Edwards          Master 50+ - Women
+ 36)  00:31:36.2  Howard Johnson            Master 60+ - Men  
+ 37)  00:33:59.5  Bill Thomson              Master 60+ - Men  
+ 38)  00:34:04.5  John Mikkonen             Master 60+ - Men  
+ 39)  00:35:11.9  Arthur Street             Merckx - Men      
+ 40)  00:35:15.4  Anna Brunton              Women (4/5/U)     
+ 41)  00:36:52.3  Ruthanne Waite            Merckx - Women    
+ 42)  00:38:45.8  Lauren Harper             Merckx - Women     

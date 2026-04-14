@@ -1,0 +1,74 @@
+Category Results
+Juniors             00:40:28.575  Keith Blunt             
+Masters 50+ - Men   00:24:14.587  Bobby Hough             
+Masters 50+ - Men   00:26:00.886  Rex Morgan              
+Masters 50+ - Men   00:26:56.957  Mark Boucher            
+Masters 50+ - Men   00:27:23.003  Chip Palmer             
+Masters 50+ - Men   00:34:16.661  William Thomson         
+Menu (4/5/U)        00:24:15.742  Mike Potter             
+Menu (4/5/U)        00:24:55.162  Gregory Pfister         
+Menu (4/5/U)        00:26:19.069  David Hall              
+Menu (4/5/U)        00:27:12.822  Ethan Lee               
+Menu (4/5/U)        00:28:02.800  Pete Schriver           
+Menu (4/5/U)        00:29:44.471  Neil Tabor              
+Menu (4/5/U)        00:30:25.230  Ben Baum                
+Mercyx - Men        00:24:17.624  Luke Barnett            
+Mercyx - Men        00:24:58.247  Craig Campbell          
+Mercyx - Men        00:26:26.842  Joel Neff               
+Mercyx - Men        00:26:47.339  Willie Fowlkes          
+Mercyx - Men        00:26:49.776  Rob Bishop              
+Mercyx - Men        00:27:37.083  Rob Cline               
+Mercyx - Men        00:27:46.186  Mike Garity             
+Mercyx - Men        00:27:47.256  Robert Bailey           
+Mercyx - Men        00:28:02.512  Jason Tucker            
+Mercyx - Men        00:28:04.892  Glynn Clements          
+Mercyx - Men        00:28:40.188  Jeff Jordan             
+Mercyx - Men        00:29:05.477  Billy Hughes            
+Mercyx - Men        00:29:10.220  Terrence Derfler        
+Mercyx - Men        00:30:02.796  Ken Sturm               
+Mercyx - Women      00:27:00.391  Tonya Nagy              
+Mercyx - Women      00:29:17.221  Laura Cline             
+Mercyx - Women      00:29:46.196  Mary Clark              
+Mercyx - Women      00:30:12.575  Kimberly Elmore         
+Mercyx - Women      00:30:40.768  Paige Combs             
+Mercyx - Women      00:36:22.573  Linda Cunningham        
+Women (4/U)         00:27:18.731  Christi Britt           
+Women (4/U)         00:28:47.726  Tonya Wilson Shuba      
+Women (4/U)         00:31:15.645  Elizabeth Blunt         
+Overall Results
+  1)  00:24:14.587  Bobby Hough               Masters 50+ - Men 
+  2)  00:24:15.742  Mike Potter               Menu (4/5/U)      
+  3)  00:24:17.624  Luke Barnett              Mercyx - Men      
+  4)  00:24:55.162  Gregory Pfister           Menu (4/5/U)      
+  5)  00:24:58.247  Craig Campbell            Mercyx - Men      
+  6)  00:26:00.886  Rex Morgan                Masters 50+ - Men 
+  7)  00:26:19.069  David Hall                Menu (4/5/U)      
+  8)  00:26:26.842  Joel Neff                 Mercyx - Men      
+  9)  00:26:47.339  Willie Fowlkes            Mercyx - Men      
+ 10)  00:26:49.776  Rob Bishop                Mercyx - Men      
+ 11)  00:26:56.957  Mark Boucher              Masters 50+ - Men 
+ 12)  00:27:00.391  Tonya Nagy                Mercyx - Women    
+ 13)  00:27:12.822  Ethan Lee                 Menu (4/5/U)      
+ 14)  00:27:18.731  Christi Britt             Women (4/U)       
+ 15)  00:27:23.003  Chip Palmer               Masters 50+ - Men 
+ 16)  00:27:37.083  Rob Cline                 Mercyx - Men      
+ 17)  00:27:46.186  Mike Garity               Mercyx - Men      
+ 18)  00:27:47.256  Robert Bailey             Mercyx - Men      
+ 19)  00:28:02.512  Jason Tucker              Mercyx - Men      
+ 20)  00:28:02.800  Pete Schriver             Menu (4/5/U)      
+ 21)  00:28:04.892  Glynn Clements            Mercyx - Men      
+ 22)  00:28:40.188  Jeff Jordan               Mercyx - Men      
+ 23)  00:28:47.726  Tonya Wilson Shuba        Women (4/U)       
+ 24)  00:29:05.477  Billy Hughes              Mercyx - Men      
+ 25)  00:29:10.220  Terrence Derfler          Mercyx - Men      
+ 26)  00:29:17.221  Laura Cline               Mercyx - Women    
+ 27)  00:29:44.471  Neil Tabor                Menu (4/5/U)      
+ 28)  00:29:46.196  Mary Clark                Mercyx - Women    
+ 29)  00:30:02.796  Ken Sturm                 Mercyx - Men      
+ 30)  00:30:12.575  Kimberly Elmore           Mercyx - Women    
+ 31)  00:30:25.230  Ben Baum                  Menu (4/5/U)      
+ 32)  00:30:40.768  Paige Combs               Mercyx - Women    
+ 33)  00:31:15.645  Elizabeth Blunt           Women (4/U)       
+ 34)  00:34:16.661  William Thomson           Masters 50+ - Men 
+ 35)  00:36:22.573  Linda Cunningham          Mercyx - Women    
+ 36)  00:40:28.575  Keith Blunt               Juniors            
