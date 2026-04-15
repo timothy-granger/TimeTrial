@@ -16,6 +16,7 @@ def main() -> None:
     from timetrial.services.import_export_service import ImportExportService
     from timetrial.services.audio_service import AudioService
     from timetrial.services.persistence_service import PersistenceService
+    from timetrial.services.web_publish_service import WebPublishService
     from timetrial.ui.main_window import MainWindow
 
     app = QApplication(sys.argv)
@@ -35,6 +36,17 @@ def main() -> None:
     persistence_svc = PersistenceService(db_path)
     persistence_svc.open()
 
+    # Web publishing (GitHub Pages)
+    repo_path = Path("D:/tt-live-results")
+    web_publish_svc = None
+    if repo_path.exists():
+        web_publish_svc = WebPublishService(
+            race, config, event_bus, results_svc,
+            repo_path=repo_path,
+            race_name="SC Senior Games — Cycling Time Trial",
+            event_info="May 7, 2026",
+        )
+
     # Check for recoverable race
     recoverable_id = persistence_svc.find_recoverable_race()
     if recoverable_id is not None:
@@ -47,15 +59,26 @@ def main() -> None:
         if reply == QMessageBox.StandardButton.Yes:
             snapshot = persistence_svc.load_race(recoverable_id)
             race.start_time = snapshot["start_time"]
-            race.state = RaceState.STOPPED  # Don't auto-resume the timer
+            race.state = RaceState.STOPPED
             race.riders = snapshot["riders"]
-            race.current_rider_index = len(race.riders)  # All riders "started" for recovery
+            race.current_rider_index = len(race.riders)
 
     main_window = MainWindow(
         race, config, event_bus,
         timing_svc, results_svc, series_svc, io_svc,
         persistence_svc,
     )
+
+    # Wire web publish service to start list model
+    if web_publish_svc:
+        web_publish_svc.set_start_list_model(main_window._start_list.model)
+        web_publish_svc.publish_success.connect(
+            lambda n: main_window.statusBar().showMessage(f"Results published to web ({n} finishers)", 3000)
+        )
+        web_publish_svc.publish_error.connect(
+            lambda e: main_window.statusBar().showMessage(f"Publish error: {e}", 5000)
+        )
+        main_window._web_publish_svc = web_publish_svc
 
     # Load recovered finish records into the UI after MainWindow is built
     if recoverable_id is not None and reply == QMessageBox.StandardButton.Yes:

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compile_Final_SC_SR_Games_Start_Lists</title>
+    <style>
+@media print {
+    body { margin: 0; }
+    h1, h2, h3 { page-break-after: avoid; }
+    table, blockquote, pre { page-break-inside: avoid; }
+}
+
+body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 0 40px;
+    background: #fff;
+}
+
+h1 {
+    font-size: 28px;
+    color: #1a1a2e;
+    border-bottom: 3px solid #16213e;
+    padding-bottom: 8px;
+    margin-top: 32px;
+}
+
+h2 {
+    font-size: 22px;
+    color: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding-bottom: 6px;
+    margin-top: 28px;
+}
+
+h3 {
+    font-size: 17px;
+    color: #0f3460;
+    margin-top: 20px;
+}
+
+/* --- TABLES --- */
+table {
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+    width: 100%;
+    border: 2px solid #16213e;
+}
+
+thead th {
+    background-color: #16213e;
+    color: #ffffff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid #16213e;
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 8px 12px;
+    border: 1px solid #c8d6e5;
+    vertical-align: top;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f0f4f8;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+tbody tr:hover {
+    background-color: #dbe6f0;
+}
+
+/* Bold text in table cells */
+td strong, th strong {
+    color: inherit;
+}
+
+/* --- BLOCKQUOTES --- */
+blockquote {
+    border-left: 4px solid #0f3460;
+    margin: 16px 0;
+    padding: 12px 20px;
+    background-color: #f0f4f8;
+    color: #333;
+    font-style: italic;
+}
+
+blockquote strong {
+    font-style: normal;
+    color: #16213e;
+}
+
+blockquote ol, blockquote ul {
+    margin: 8px 0;
+}
+
+/* --- CODE --- */
+code {
+    background-color: #eef2f7;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    color: #c0392b;
+}
+
+pre {
+    background-color: #f5f7fa;
+    padding: 16px;
+    border: 1px solid #d5dce6;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: #1a1a1a;
+}
+
+/* --- LISTS --- */
+ul, ol {
+    margin: 8px 0;
+    padding-left: 28px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+/* --- HORIZONTAL RULES --- */
+hr {
+    border: none;
+    border-top: 2px solid #d5dce6;
+    margin: 24px 0;
+}
+
+/* --- MISC --- */
+strong {
+    color: #16213e;
+}
+
+em {
+    color: #444;
+}
+
+a {
+    color: #0f3460;
+}
+
+p {
+    margin: 10px 0;
+}
+
+/* Footer */
+.footer-note {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+}
+</style>
+</head>
+<body>
+<h1 id="compile-final-sc-senior-games-start-lists">Compile Final SC Senior Games Start Lists</h1>
+<p><strong>Purpose:</strong> Generate updated 5K and 10K time trial start lists from the SC Senior Games registration website on race morning (May 7, 2026).</p>
+<p><strong>Website:</strong> https://sc.fusesport.com/competitions.asp?compID=1773561&amp;id=1379</p>
+<hr />
+<h2 id="what-this-process-does">What This Process Does</h2>
+<ol>
+<li>Fetches the main registration page to find all "Registrants" links</li>
+<li>Follows each link to extract participant names by category and age group</li>
+<li>Cleans up name casing issues (lowercase, ALL CAPS)</li>
+<li>Generates two start list CSVs ready to import into the TimeTrial app</li>
+<li>Cross-references riders against the Greenville Spinners history database</li>
+</ol>
+<hr />
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Terminal open in <code>D:\TimeTrial_Refactor</code></li>
+<li>Virtual environment available at <code>.venv\</code></li>
+<li>Internet connection</li>
+</ul>
+<hr />
+<h2 id="step-1-scrape-registrants-from-website">Step 1: Scrape Registrants from Website</h2>
+<p>Open Claude Code and paste this prompt:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">Fetch</span> <span class="s s-Atom">the</span> <span class="nv">SC</span> <span class="nv">Senior</span> <span class="nv">Games</span> <span class="s s-Atom">cycling</span> <span class="s s-Atom">time</span> <span class="s s-Atom">trial</span> <span class="s s-Atom">registration</span> <span class="s s-Atom">page</span> <span class="s s-Atom">at</span><span class="p">:</span>
+<span class="s s-Atom">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">sc</span><span class="p">.</span><span class="s s-Atom">fusesport</span><span class="p">.</span><span class="s s-Atom">com</span><span class="o">/</span><span class="s s-Atom">competitions</span><span class="p">.</span><span class="s s-Atom">asp</span><span class="nb">?</span><span class="s s-Atom">compID</span><span class="o">=</span><span class="mi">1773561</span><span class="s s-Atom">&amp;id</span><span class="o">=</span><span class="mi">1379</span>
+
+<span class="nv">Extract</span> <span class="s s-Atom">all</span> <span class="s2">&quot;Registrants&quot;</span> <span class="s s-Atom">links</span> <span class="s s-Atom">from</span> <span class="s s-Atom">the</span> <span class="s s-Atom">page</span><span class="p">.</span> <span class="nv">Each</span> <span class="s s-Atom">link</span> <span class="o">is</span> <span class="s s-Atom">a</span> <span class="s s-Atom">relative</span> <span class="nv">URL</span>
+<span class="s s-Atom">like</span> <span class="s s-Atom">drawindividual</span><span class="p">.</span><span class="s s-Atom">asp</span><span class="nb">?</span><span class="s s-Atom">id</span><span class="o">=</span><span class="nv">XXXXXXX</span><span class="s s-Atom">&amp;seasonid</span><span class="o">=</span><span class="mi">1379</span> <span class="s s-Atom">with</span> <span class="s s-Atom">an</span> <span class="s s-Atom">associated</span> <span class="nf">category</span>
+<span class="p">(</span><span class="s s-Atom">e</span><span class="p">.</span><span class="s s-Atom">g</span><span class="p">.</span> <span class="s2">&quot;Cycling - Womens - 5K Time Trial | 60-64&quot;</span><span class="p">).</span>
+
+<span class="nv">Then</span> <span class="s s-Atom">fetch</span> <span class="nv">EVERY</span> <span class="s s-Atom">registrants</span> <span class="nf">link</span> <span class="p">(</span><span class="s s-Atom">full</span> <span class="nv">URL</span><span class="o">:</span> <span class="s s-Atom">https</span><span class="p">:</span><span class="o">//</span><span class="s s-Atom">sc</span><span class="p">.</span><span class="s s-Atom">fusesport</span><span class="p">.</span><span class="s s-Atom">com</span><span class="o">/</span><span class="s s-Atom">drawindividual</span><span class="p">.</span><span class="s s-Atom">asp</span><span class="nb">?</span><span class="s s-Atom">id=...&amp;seasonid</span><span class="o">=</span><span class="mi">1379</span><span class="p">)</span>
+<span class="s s-Atom">and</span> <span class="s s-Atom">extract</span> <span class="s s-Atom">all</span> <span class="s s-Atom">participant</span> <span class="s s-Atom">names</span> <span class="s s-Atom">from</span> <span class="s s-Atom">each</span> <span class="s s-Atom">page</span><span class="p">.</span>
+
+<span class="nv">Compile</span> <span class="s s-Atom">into</span> <span class="s s-Atom">a</span> <span class="s s-Atom">single</span> <span class="nv">CSV</span> <span class="s s-Atom">file</span> <span class="s s-Atom">at</span> <span class="nv">D</span><span class="o">:</span><span class="s s-Atom">\</span><span class="nv">TimeTrial_Refactor</span><span class="s s-Atom">\sc_senior_games_registrants</span><span class="p">.</span><span class="s s-Atom">csv</span> <span class="s s-Atom">with</span> <span class="s s-Atom">columns</span><span class="p">:</span>
+<span class="nv">FIRST_NAME</span><span class="p">,</span><span class="nv">LAST_NAME</span><span class="p">,</span><span class="nv">EVENT</span><span class="p">,</span><span class="nv">AGE_GROUP</span>
+
+<span class="nv">Clean</span> <span class="s s-Atom">up</span> <span class="s s-Atom">name</span> <span class="s s-Atom">casing</span><span class="p">:</span>
+<span class="o">-</span> <span class="nv">Fix</span> <span class="s s-Atom">all</span><span class="o">-</span><span class="s s-Atom">lowercase</span> <span class="nf">names</span> <span class="p">(</span><span class="s s-Atom">e</span><span class="p">.</span><span class="s s-Atom">g</span><span class="p">.</span> <span class="s2">&quot;steve&quot;</span> <span class="s s-Atom">→</span> <span class="s2">&quot;Steve&quot;</span><span class="p">)</span>
+<span class="o">-</span> <span class="nv">Fix</span> <span class="nv">ALL</span> <span class="nv">CAPS</span> <span class="nf">names</span> <span class="p">(</span><span class="s s-Atom">e</span><span class="p">.</span><span class="s s-Atom">g</span><span class="p">.</span> <span class="s2">&quot;DAVID&quot;</span> <span class="s s-Atom">→</span> <span class="s2">&quot;David&quot;</span><span class="p">)</span>
+
+<span class="nv">Then</span> <span class="s s-Atom">generate</span> <span class="s s-Atom">two</span> <span class="s s-Atom">start</span> <span class="s s-Atom">list</span> <span class="nv">CSVs</span> <span class="s s-Atom">ready</span> <span class="s s-Atom">for</span> <span class="s s-Atom">the</span> <span class="nv">TimeTrial</span> <span class="s s-Atom">app</span><span class="p">:</span>
+
+<span class="nv">For</span> <span class="nv">BOTH</span> <span class="s s-Atom">files</span><span class="p">,</span> <span class="s s-Atom">sort</span> <span class="s s-Atom">order</span> <span class="s s-Atom">is</span><span class="p">:</span> <span class="nv">Men</span> <span class="nf">first</span> <span class="p">(</span><span class="s s-Atom">by</span> <span class="s s-Atom">age</span> <span class="s s-Atom">group</span> <span class="s s-Atom">ascending</span><span class="p">,</span> <span class="s s-Atom">then</span> <span class="s s-Atom">alphabetically</span> <span class="s s-Atom">by</span> <span class="s s-Atom">last</span> <span class="s s-Atom">name</span><span class="p">),</span>
+<span class="s s-Atom">then</span> <span class="nv">Women</span> <span class="p">(</span><span class="s s-Atom">same</span> <span class="s s-Atom">sorting</span><span class="p">).</span> <span class="nv">This</span> <span class="s s-Atom">ensures</span> <span class="s s-Atom">women</span> <span class="s s-Atom">are</span> <span class="o">not</span> <span class="s s-Atom">caught</span> <span class="s s-Atom">by</span> <span class="s s-Atom">men</span> <span class="s s-Atom">during</span> <span class="s s-Atom">the</span> <span class="s s-Atom">race</span><span class="p">.</span>
+
+<span class="mf">1.</span> <span class="nv">D</span><span class="o">:</span><span class="s s-Atom">\</span><span class="nv">TimeTrial_Refactor</span><span class="s s-Atom">\sc_senior_games_5k_start_list</span><span class="p">.</span><span class="s s-Atom">csv</span>
+   <span class="o">-</span> <span class="nv">Only</span> <span class="s s-Atom">riders</span> <span class="s s-Atom">registered</span> <span class="s s-Atom">for</span> <span class="mi">5</span><span class="nv">K</span> <span class="s s-Atom">events</span>
+   <span class="o">-</span> <span class="mi">7</span><span class="o">-</span><span class="s s-Atom">column</span> <span class="s s-Atom">format</span><span class="p">:</span> <span class="nv">BIB_NUMBER</span><span class="p">,</span> <span class="nv">LAST_NAME</span><span class="p">,</span> <span class="nv">FIRST_NAME</span><span class="p">,</span> <span class="nv">CATEGORY</span><span class="p">,</span> <span class="nv">START_POSITION</span><span class="p">,</span> <span class="nv">FINISH_TIME</span><span class="p">,</span> <span class="nv">RESULT</span>
+   <span class="o">-</span> <span class="nv">Categories</span> <span class="s s-Atom">formatted</span> <span class="s s-Atom">as</span> <span class="s2">&quot;Men 55-59&quot;</span><span class="p">,</span> <span class="s2">&quot;Women 60-64&quot;</span><span class="p">,</span> <span class="s s-Atom">etc</span><span class="p">.</span>
+   <span class="o">-</span> <span class="nv">Bib</span> <span class="s s-Atom">numbers</span> <span class="s s-Atom">sequential</span> <span class="s s-Atom">starting</span> <span class="s s-Atom">at</span> <span class="mi">1</span>
+   <span class="o">-</span> <span class="nv">Start</span> <span class="s s-Atom">positions</span> <span class="s s-Atom">at</span> <span class="mf">0.5</span> <span class="nf">increments</span> <span class="p">(</span><span class="mi">30</span><span class="o">-</span><span class="s s-Atom">second</span> <span class="s s-Atom">intervals</span><span class="p">)</span>
+   <span class="o">-</span> <span class="nv">FINISH_TIME</span> <span class="s s-Atom">and</span> <span class="nv">RESULT</span> <span class="s s-Atom">set</span> <span class="s s-Atom">to</span> <span class="s s-Atom">--:--:--.---</span>
+
+<span class="mf">2.</span> <span class="nv">D</span><span class="o">:</span><span class="s s-Atom">\</span><span class="nv">TimeTrial_Refactor</span><span class="s s-Atom">\sc_senior_games_10k_start_list</span><span class="p">.</span><span class="s s-Atom">csv</span>
+   <span class="o">-</span> <span class="nv">Same</span> <span class="s s-Atom">format</span><span class="p">,</span> <span class="s s-Atom">only</span> <span class="s s-Atom">riders</span> <span class="s s-Atom">registered</span> <span class="s s-Atom">for</span> <span class="mi">10</span><span class="nv">K</span> <span class="s s-Atom">events</span>
+
+<span class="nv">Also</span> <span class="s s-Atom">cross</span><span class="o">-</span><span class="s s-Atom">reference</span> <span class="s s-Atom">all</span> <span class="s s-Atom">riders</span> <span class="s s-Atom">against</span> <span class="s s-Atom">the</span> <span class="s s-Atom">history</span> <span class="s s-Atom">database</span> <span class="s s-Atom">at</span>
+<span class="nv">C</span><span class="o">:</span><span class="s s-Atom">\</span><span class="nv">Users</span><span class="s s-Atom">\</span><span class="nv">Timothy</span><span class="s s-Atom">\.timetrial\history</span><span class="p">.</span><span class="s s-Atom">db</span> <span class="s s-Atom">to</span> <span class="s s-Atom">identify</span> <span class="s s-Atom">known</span> <span class="nv">Greenville</span> <span class="nv">Spinners</span> <span class="s s-Atom">riders</span><span class="p">.</span>
+<span class="nv">Show</span> <span class="s s-Atom">their</span> <span class="s s-Atom">race</span> <span class="s s-Atom">count</span> <span class="s s-Atom">and</span> <span class="s s-Atom">personal</span> <span class="s s-Atom">best</span> <span class="s s-Atom">time</span><span class="p">.</span>
+</code></pre></div>
+
+<hr />
+<h2 id="step-2-review-the-output">Step 2: Review the Output</h2>
+<p>Check the generated files:</p>
+<ul>
+<li><code>sc_senior_games_registrants.csv</code> — raw scraped data (all registrations)</li>
+<li><code>sc_senior_games_5k_start_list.csv</code> — ready to import for Race 1</li>
+<li><code>sc_senior_games_10k_start_list.csv</code> — ready to import for Race 2</li>
+</ul>
+<p>Verify:
+- [ ] Rider count looks reasonable
+- [ ] No duplicate riders within a single start list
+- [ ] Name casing is clean
+- [ ] Men are listed before Women
+- [ ] Age groups are in ascending order within each gender
+- [ ] Bib numbers are sequential
+- [ ] Start positions are 0.5 increments</p>
+<hr />
+<h2 id="step-3-import-into-the-app">Step 3: Import into the App</h2>
+<ol>
+<li>
+<p>Launch the app:
+   <code>D:\TimeTrial_Refactor\.venv\Scripts\python.exe -m timetrial</code></p>
+</li>
+<li>
+<p>For the 5K race: Start List tab → Import → select <code>sc_senior_games_5k_start_list.csv</code></p>
+</li>
+<li>
+<p>After the 5K: click New Race → Import → select <code>sc_senior_games_10k_start_list.csv</code></p>
+</li>
+</ol>
+<hr />
+<h2 id="technical-details">Technical Details</h2>
+<h3 id="website-structure">Website Structure</h3>
+<p>The main page at <code>competitions.asp?compID=1773561&amp;id=1379</code> lists cycling time trial categories with "Registrants" links. Each link points to <code>drawindividual.asp?id=XXXXXXX&amp;seasonid=1379</code> which contains the participant names for that category/age group.</p>
+<h3 id="categories-on-the-website">Categories on the Website</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Age Groups</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cycling - Womens - 5K Time Trial</td>
+<td>60-64, 65-69, 70-74, 75-79</td>
+</tr>
+<tr>
+<td>Cycling - Womens - 10K Time Trial</td>
+<td>60-64, 65-69, 70-74, 75-79</td>
+</tr>
+<tr>
+<td>Cycling - Mens - 5K Time Trial</td>
+<td>55-59, 60-64, 65-69, 70-74, 75-79, 80-84, 85-89</td>
+</tr>
+<tr>
+<td>Cycling - Mens - 10K Time Trial</td>
+<td>55-59, 60-64, 65-69, 70-74, 75-79, 80-84</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> The category IDs in the URLs may change if the website is updated. The scraping process discovers them dynamically from the main page, so it will adapt to any changes.</p>
+<h3 id="start-list-csv-format">Start List CSV Format</h3>
+<p>The app expects this 7-column format (matching legacy compatibility):</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">BIB_NUMBER</span><span class="p">,</span> <span class="nv">LAST_NAME</span><span class="p">,</span> <span class="nv">FIRST_NAME</span><span class="p">,</span> <span class="nv">CATEGORY</span><span class="p">,</span> <span class="nv">START_POSITION</span><span class="p">,</span> <span class="nv">FINISH_TIME</span><span class="p">,</span> <span class="nv">RESULT</span>
+<span class="mi">1</span><span class="p">,</span><span class="nv">Burns</span><span class="p">,</span><span class="nv">Robert</span><span class="p">,</span><span class="nv">Men</span> <span class="mi">55</span><span class="o">-</span><span class="mi">59</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="s s-Atom">--:--:--.---</span><span class="p">,</span><span class="s s-Atom">--:--:--.---</span>
+<span class="mi">2</span><span class="p">,</span><span class="nv">Flesher</span><span class="p">,</span><span class="nv">David</span><span class="p">,</span><span class="nv">Men</span> <span class="mi">55</span><span class="o">-</span><span class="mi">59</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s s-Atom">--:--:--.---</span><span class="p">,</span><span class="s s-Atom">--:--:--.---</span>
+</code></pre></div>
+
+<h3 id="start-order-rationale">Start Order Rationale</h3>
+<p>Men start first, women last. This prevents faster men from catching slower women on the course. Within each gender, riders are ordered by age group (youngest first) then alphabetically. This clusters similar-speed riders together and makes it easier for the starter to manage.</p>
+<hr />
+<h2 id="if-claude-code-is-not-available">If Claude Code Is Not Available</h2>
+<p>You can manually scrape the data:</p>
+<ol>
+<li>Open each "Registrants" link in a browser</li>
+<li>Copy the names into a spreadsheet</li>
+<li>Save as CSV with columns: FIRST_NAME, LAST_NAME, EVENT, AGE_GROUP</li>
+<li>Run the start list generator:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code><span class="c1"># From D:\TimeTrial_Refactor directory:</span>
+<span class="c1"># Edit sc_senior_games_registrants.csv with the manual data, then run:</span>
+
+<span class="n">D</span><span class="p">:</span>\<span class="n">TimeTrial_Refactor</span>\<span class="o">.</span><span class="n">venv</span>\<span class="n">Scripts</span>\<span class="n">python</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;sc_senior_games_registrants.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;FIRST_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;LAST_NAME&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">first</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="ow">or</span> <span class="n">first</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">last</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="n">last</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;first&#39;</span><span class="p">:</span> <span class="n">first</span><span class="p">,</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span> <span class="n">last</span><span class="p">,</span> <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;EVENT&#39;</span><span class="p">],</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;AGE_GROUP&#39;</span><span class="p">]})</span>
+
+<span class="k">for</span> <span class="n">event_label</span><span class="p">,</span> <span class="n">event_filter</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;5K&#39;</span><span class="p">,</span> <span class="s1">&#39;5K&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;10K&#39;</span><span class="p">,</span> <span class="s1">&#39;10K&#39;</span><span class="p">)]:</span>
+    <span class="n">event_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span> <span class="k">if</span> <span class="n">event_filter</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]]</span>
+    <span class="n">event_rows</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="s1">&#39;Womens&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;last&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;first&#39;</span><span class="p">]))</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;sc_senior_games_</span><span class="si">{</span><span class="n">event_label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">_start_list.csv&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;BIB_NUMBER, LAST_NAME, FIRST_NAME, CATEGORY, START_POSITION, FINISH_TIME, RESULT</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">bib</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">event_rows</span><span class="p">:</span>
+            <span class="n">gender</span> <span class="o">=</span> <span class="s1">&#39;Women&#39;</span> <span class="k">if</span> <span class="s1">&#39;Womens&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="s1">&#39;Men&#39;</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">bib</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="err">\</span><span class="s2">&quot;last</span><span class="se">\&quot;</span><span class="s2">]},</span><span class="si">{r[\&quot;first\&quot;]}</span><span class="s2">,</span><span class="si">{gender}</span><span class="s2"> </span><span class="si">{r[\&quot;age\&quot;]}</span><span class="s2">,</span><span class="si">{pos}</span><span class="s2">,--:--:--.---,--:--:--.---</span><span class="se">\r\n</span><span class="s2">&#39;)</span>
+            <span class="n">bib</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">pos</span> <span class="o">+=</span> <span class="mf">0.5</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">event_rows</span><span class="p">)</span><span class="si">}</span><span class="s1"> riders&#39;</span><span class="p">)</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<div class="footer-note">
+    Print this page (Ctrl+P) and select "Save as PDF" for best results.
+</div>
+</body>
+</html>

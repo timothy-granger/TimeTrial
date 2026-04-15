@@ -107,6 +107,9 @@ class MainWindow(QMainWindow):
         self._bus.race_stopped.connect(self._on_race_stopped)
         self._bus.elapsed_updated.connect(self._on_elapsed_updated)
 
+        # New race
+        self._race_control.new_race_requested.connect(self._on_new_race)
+
         # When finish list calculates a result, update start list model
         self._finish_list.model.result_calculated.connect(self._on_result_calculated)
 
@@ -154,6 +157,35 @@ class MainWindow(QMainWindow):
         self._on_results_changed()
 
         self._status.showMessage("Race recovered from auto-save")
+
+    # -- New Race --
+
+    def _on_new_race(self) -> None:
+        """Reset all state for a new race."""
+        # Clear race model
+        self._race.start_time = None
+        self._race.state = RaceState.NOT_STARTED
+        self._race.riders.clear()
+        self._race.finish_records.clear()
+        self._race.current_rider_index = 0
+
+        # Clear UI models
+        self._start_list.model.clear()
+        self._finish_list.model.clear()
+
+        # Reset race control display
+        self._race_control.reset_display()
+
+        # Clear results
+        self._bus.results_updated.emit("")
+
+        # Start fresh persistence record
+        if self._persistence:
+            self._persistence._current_race_id = None
+
+        self._start_list.set_race_running(False)
+        self._status.showMessage("Ready — load a start list to begin")
+        self._tabs.setCurrentIndex(0)  # Switch to Start List tab
 
     # -- Slots --
 

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAY_07_README</title>
+    <style>
+@media print {
+    body { margin: 0; }
+    h1, h2, h3 { page-break-after: avoid; }
+    table, blockquote, pre { page-break-inside: avoid; }
+}
+
+body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 0 40px;
+    background: #fff;
+}
+
+h1 {
+    font-size: 28px;
+    color: #1a1a2e;
+    border-bottom: 3px solid #16213e;
+    padding-bottom: 8px;
+    margin-top: 32px;
+}
+
+h2 {
+    font-size: 22px;
+    color: #16213e;
+    border-bottom: 2px solid #0f3460;
+    padding-bottom: 6px;
+    margin-top: 28px;
+}
+
+h3 {
+    font-size: 17px;
+    color: #0f3460;
+    margin-top: 20px;
+}
+
+/* --- TABLES --- */
+table {
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+    width: 100%;
+    border: 2px solid #16213e;
+}
+
+thead th {
+    background-color: #16213e;
+    color: #ffffff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    border: 1px solid #16213e;
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 8px 12px;
+    border: 1px solid #c8d6e5;
+    vertical-align: top;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f0f4f8;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+tbody tr:hover {
+    background-color: #dbe6f0;
+}
+
+/* Bold text in table cells */
+td strong, th strong {
+    color: inherit;
+}
+
+/* --- BLOCKQUOTES --- */
+blockquote {
+    border-left: 4px solid #0f3460;
+    margin: 16px 0;
+    padding: 12px 20px;
+    background-color: #f0f4f8;
+    color: #333;
+    font-style: italic;
+}
+
+blockquote strong {
+    font-style: normal;
+    color: #16213e;
+}
+
+blockquote ol, blockquote ul {
+    margin: 8px 0;
+}
+
+/* --- CODE --- */
+code {
+    background-color: #eef2f7;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px;
+    color: #c0392b;
+}
+
+pre {
+    background-color: #f5f7fa;
+    padding: 16px;
+    border: 1px solid #d5dce6;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: #1a1a1a;
+}
+
+/* --- LISTS --- */
+ul, ol {
+    margin: 8px 0;
+    padding-left: 28px;
+}
+
+li {
+    margin-bottom: 4px;
+}
+
+/* --- HORIZONTAL RULES --- */
+hr {
+    border: none;
+    border-top: 2px solid #d5dce6;
+    margin: 24px 0;
+}
+
+/* --- MISC --- */
+strong {
+    color: #16213e;
+}
+
+em {
+    color: #444;
+}
+
+a {
+    color: #0f3460;
+}
+
+p {
+    margin: 10px 0;
+}
+
+/* Footer */
+.footer-note {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+}
+</style>
+</head>
+<body>
+<h1 id="sc-senior-games-may-7-2026-race-day-instructions">SC Senior Games — May 7, 2026 Race Day Instructions</h1>
+<h2 id="event-cycling-time-trial-5k-and-10k">Event: Cycling Time Trial — 5K and 10K</h2>
+<p><strong>Location:</strong> TBD
+<strong>Start Lists:</strong> Pre-loaded from SC Senior Games registration (sc.fusesport.com)</p>
+<hr />
+<h2 id="pre-race-setup">Pre-Race Setup</h2>
+<ol>
+<li>
+<p>Open a terminal and launch the app:
+   <code>D:\TimeTrial_Refactor\.venv\Scripts\python.exe -m timetrial</code></p>
+</li>
+<li>
+<p>Verify the starter display settings in <code>timetrial\config\default_config.toml</code>:</p>
+</li>
+<li><code>race_title</code> — update if needed for Senior Games branding</li>
+<li><code>logo_image</code> — update path if using a different logo</li>
+<li><code>countdown_sound_trigger_seconds = 11</code> — sound plays 11 seconds before each start</li>
+</ol>
+<hr />
+<h2 id="race-1-5k-time-trial-41-riders">Race 1: 5K Time Trial (41 riders)</h2>
+<h3 id="load-start-list">Load Start List</h3>
+<ol>
+<li>Go to <strong>Start List</strong> tab</li>
+<li>Click <strong>Import</strong> → select <code>D:\TimeTrial_Refactor\sc_senior_games_5k_start_list.csv</code></li>
+<li>Verify riders are loaded — 41 riders, men first then women</li>
+<li>Start order:</li>
+<li>Bibs 1-7: Men 55-59</li>
+<li>Bibs 8-13: Men 60-64</li>
+<li>Bibs 14-18: Men 65-69</li>
+<li>Bibs 19-24: Men 70-74</li>
+<li>Bibs 25-30: Men 75-79</li>
+<li>Bibs 31-33: Men 80-84</li>
+<li>Bib 34: Men 85-89</li>
+<li>Bibs 35-36: Women 60-64</li>
+<li>Bib 37: Women 65-69</li>
+<li>Bibs 38-39: Women 70-74</li>
+<li>Bibs 40-41: Women 75-79</li>
+</ol>
+<h3 id="open-starter-display">Open Starter Display</h3>
+<ul>
+<li>Press <strong>Ctrl+S</strong> to open the starter display window</li>
+<li>Drag it to the secondary monitor facing the start line</li>
+<li>Shows: race title, rider name, countdown, bib number, race clock</li>
+</ul>
+<h3 id="start-the-race">Start the Race</h3>
+<ol>
+<li>Click <strong>Start Race</strong> (or have everything ready and click when the first rider should go)</li>
+<li>Riders depart every 30 seconds</li>
+<li>The countdown and sound will trigger automatically</li>
+<li>Total start time: ~20.5 minutes for all 41 riders</li>
+</ol>
+<h3 id="record-finishes">Record Finishes</h3>
+<ol>
+<li>As each rider crosses the finish line, press <strong>Ctrl+T</strong></li>
+<li>This captures the exact timestamp</li>
+<li>The cursor jumps to the Bib # field</li>
+<li>Type the rider's <strong>bib number</strong> and press <strong>Enter</strong></li>
+<li>Name, category, and elapsed time auto-populate</li>
+<li>If you enter a wrong bib, just retype — it will re-lookup</li>
+<li>Unknown bibs show "(not found)" — no crash</li>
+<li>You can record finishes from any tab — Ctrl+T works globally</li>
+<li>Check the <strong>Results</strong> tab to see live category and overall standings</li>
+</ol>
+<h3 id="export-5k-results">Export 5K Results</h3>
+<ol>
+<li>Go to <strong>Start List</strong> tab → click <strong>Export</strong> → save as <code>sc_senior_games_5k_results.csv</code></li>
+<li>Go to <strong>Finish Times</strong> tab → click <strong>Export</strong> → save as <code>sc_senior_games_5k_finish_list.csv</code></li>
+<li>Click <strong>Stop Race</strong></li>
+</ol>
+<hr />
+<h2 id="race-2-10k-time-trial-38-riders">Race 2: 10K Time Trial (38 riders)</h2>
+<h3 id="reset-for-new-race">Reset for New Race</h3>
+<ol>
+<li>Click <strong>New Race</strong> button (next to Start/Stop in the Race Control bar)</li>
+<li>Confirm when prompted — this clears all 5K data from the app</li>
+<li>App switches to the Start List tab, ready for import</li>
+</ol>
+<h3 id="load-10k-start-list">Load 10K Start List</h3>
+<ol>
+<li>Click <strong>Import</strong> → select <code>D:\TimeTrial_Refactor\sc_senior_games_10k_start_list.csv</code></li>
+<li>Verify 38 riders loaded</li>
+<li>Start order:</li>
+<li>Bibs 1-7: Men 55-59</li>
+<li>Bibs 8-13: Men 60-64</li>
+<li>Bibs 14-18: Men 65-69</li>
+<li>Bibs 19-24: Men 70-74</li>
+<li>Bibs 25-29: Men 75-79</li>
+<li>Bibs 30-32: Men 80-84</li>
+<li>Bibs 33-34: Women 60-64</li>
+<li>Bib 35: Women 65-69</li>
+<li>Bib 36: Women 70-74</li>
+<li>Bibs 37-38: Women 75-79</li>
+</ol>
+<h3 id="run-the-10k">Run the 10K</h3>
+<ol>
+<li>Press <strong>Ctrl+S</strong> if the starter display was closed (otherwise it's still open)</li>
+<li>Click <strong>Start Race</strong></li>
+<li>Record finishes with <strong>Ctrl+T</strong> + bib number (same as 5K)</li>
+<li>Total start time: ~19 minutes for all 38 riders</li>
+</ol>
+<h3 id="export-10k-results">Export 10K Results</h3>
+<ol>
+<li><strong>Start List</strong> tab → <strong>Export</strong> → save as <code>sc_senior_games_10k_results.csv</code></li>
+<li><strong>Finish Times</strong> tab → <strong>Export</strong> → save as <code>sc_senior_games_10k_finish_list.csv</code></li>
+<li>Click <strong>Stop Race</strong></li>
+</ol>
+<hr />
+<h2 id="known-riders-from-greenville-spinners-history">Known Riders from Greenville Spinners History</h2>
+<p>Five registered riders have raced in Greenville Spinners time trials:</p>
+<table>
+<thead>
+<tr>
+<th>Rider</th>
+<th>Age Group</th>
+<th>GS Races</th>
+<th>GS Personal Best</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>James Martin</td>
+<td>65-69</td>
+<td>16</td>
+<td>00:22:49</td>
+</tr>
+<tr>
+<td>Bill Radler</td>
+<td>65-69</td>
+<td>15</td>
+<td>00:23:45</td>
+</tr>
+<tr>
+<td>James Taylor</td>
+<td>70-74</td>
+<td>8</td>
+<td>00:30:01</td>
+</tr>
+<tr>
+<td>Alan Lesage</td>
+<td>70-74</td>
+<td>5</td>
+<td>00:25:59</td>
+</tr>
+<tr>
+<td>Colton Keasler</td>
+<td>60-64</td>
+<td>1</td>
+<td>00:32:52</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="quick-reference">Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Record a finish</td>
+<td><strong>Ctrl+T</strong> then type bib number</td>
+</tr>
+<tr>
+<td>Open starter display</td>
+<td><strong>Ctrl+S</strong></td>
+</tr>
+<tr>
+<td>Start race timer</td>
+<td>Click <strong>Start Race</strong></td>
+</tr>
+<tr>
+<td>Stop race timer</td>
+<td>Click <strong>Stop Race</strong></td>
+</tr>
+<tr>
+<td>Reset for next race</td>
+<td>Click <strong>New Race</strong></td>
+</tr>
+<tr>
+<td>Import start list</td>
+<td>Start List tab → <strong>Import</strong></td>
+</tr>
+<tr>
+<td>Export results</td>
+<td>Start List tab → <strong>Export</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>App won't start:</strong>
+- Make sure you're using the venv Python: <code>D:\TimeTrial_Refactor\.venv\Scripts\python.exe -m timetrial</code></p>
+<p><strong>No sound on countdown:</strong>
+- Check that <code>distro\start.m4a</code> exists
+- Check <code>default_config.toml</code> → <code>sound_file</code> path is correct</p>
+<p><strong>Starter display shows no clock:</strong>
+- Open the starter display (Ctrl+S) before or after starting the race — both work</p>
+<p><strong>Wrong bib entered:</strong>
+- Just retype the correct bib number in the same row — it will re-lookup</p>
+<p><strong>App crashes mid-race:</strong>
+- Relaunch the app — it will ask "Recover previous race?" → click Yes
+- All riders and finish times recorded up to the crash point are restored</p>
+<p><strong>Need to edit a finish time:</strong>
+- Go to Finish Times tab, double-click the finish time cell, adjust in the dialog</p>
+<div class="footer-note">
+    Print this page (Ctrl+P) and select "Save as PDF" for best results.
+</div>
+</body>
+</html>

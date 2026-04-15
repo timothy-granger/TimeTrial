@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QGroupBox,
     QPushButton, QLabel, QMessageBox,
@@ -15,6 +15,8 @@ from timetrial.services.timing_service import TimingService
 class RaceControlWidget(QWidget):
     """Embeddable widget: start/stop timer, elapsed time, countdown,
     rider on-ramp / on-deck / in-hole display."""
+
+    new_race_requested = Signal()
 
     def __init__(
         self,
@@ -39,9 +41,11 @@ class RaceControlWidget(QWidget):
         btn_row = QHBoxLayout()
         self._btn_start = QPushButton("Start Race")
         self._btn_stop = QPushButton("Stop Race")
+        self._btn_new = QPushButton("New Race")
         self._btn_stop.setEnabled(False)
         btn_row.addWidget(self._btn_start)
         btn_row.addWidget(self._btn_stop)
+        btn_row.addWidget(self._btn_new)
         ctrl_layout.addLayout(btn_row)
 
         self._lbl_elapsed = QLabel("Elapsed: --:--:--.---")
@@ -85,6 +89,7 @@ class RaceControlWidget(QWidget):
     def _connect_signals(self) -> None:
         self._btn_start.clicked.connect(self._on_start)
         self._btn_stop.clicked.connect(self._on_stop)
+        self._btn_new.clicked.connect(self._on_new_race)
 
         self._bus.elapsed_updated.connect(self._on_elapsed)
         self._bus.countdown_updated.connect(self._on_countdown)
@@ -110,6 +115,21 @@ class RaceControlWidget(QWidget):
         if reply == QMessageBox.StandardButton.Yes:
             self._timing.stop_race()
 
+    def _on_new_race(self) -> None:
+        if self._timing.is_running:
+            QMessageBox.warning(self, "New Race", "Stop the current race first.")
+            return
+
+        reply = QMessageBox.question(
+            self, "New Race",
+            "Start a new race?\n\nMake sure you've exported the current results first.\n"
+            "This will clear all riders, finish times, and results.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.new_race_requested.emit()
+
     # -- EventBus slots --
 
     def _on_race_started(self) -> None:
@@ -117,6 +137,16 @@ class RaceControlWidget(QWidget):
         self._btn_stop.setEnabled(True)
 
     def _on_race_stopped(self) -> None:
+        self._btn_start.setEnabled(True)
+        self._btn_stop.setEnabled(False)
+
+    def reset_display(self) -> None:
+        """Reset all display elements for a new race."""
+        self._lbl_elapsed.setText("Elapsed: --:--:--.---")
+        self._lbl_countdown.setText("--")
+        self._lbl_on_ramp.setText("On the Ramp: —")
+        self._lbl_on_deck.setText("On Deck: —")
+        self._lbl_in_hole.setText("In the Hole: —")
         self._btn_start.setEnabled(True)
         self._btn_stop.setEnabled(False)
 
