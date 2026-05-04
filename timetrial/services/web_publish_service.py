@@ -82,6 +82,24 @@ class WebPublishService(QObject):
         self._timer.stop()
         self._do_publish()
 
+    def clear_results(self) -> None:
+        """Push an empty results.json to clear the GitHub Pages site."""
+        self._timer.stop()
+
+        data = {
+            "race_name": self._race_name,
+            "event_info": self._event_info,
+            "updated_at": datetime.now().isoformat(),
+            "results": [],
+            "cleared": True,
+        }
+
+        self._push_in_progress = True
+        self._worker = _PushWorker(self._repo_path, data, commit_msg="Clear live results")
+        self._worker.success.connect(self._on_push_done)
+        self._worker.error.connect(self._on_push_error)
+        self._worker.start()
+
     def _on_results_updated(self, html: str) -> None:
         """Results changed — start/restart the batch timer."""
         if not self._enabled or self._start_list_model is None:
@@ -163,10 +181,11 @@ class _PushWorker(QThread):
     success = Signal(int)   # number of results
     error = Signal(str)
 
-    def __init__(self, repo_path: Path, data: dict) -> None:
+    def __init__(self, repo_path: Path, data: dict, commit_msg: str | None = None) -> None:
         super().__init__()
         self._repo_path = repo_path
         self._data = data
+        self._commit_msg = commit_msg
 
     def run(self) -> None:
         try:
@@ -176,11 +195,9 @@ class _PushWorker(QThread):
                 encoding="utf-8",
             )
 
+            msg = self._commit_msg or f"Update results: {len(self._data['results'])} finishers"
             self._git("add", "results.json")
-            self._git(
-                "commit", "-m",
-                f"Update results: {len(self._data['results'])} finishers",
-            )
+            self._git("commit", "-m", msg)
             self._git("push")
 
             self.success.emit(len(self._data["results"]))

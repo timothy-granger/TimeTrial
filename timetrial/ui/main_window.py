@@ -110,6 +110,9 @@ class MainWindow(QMainWindow):
         # New race
         self._race_control.new_race_requested.connect(self._on_new_race)
 
+        # Clear web results
+        self._race_control.clear_web_results_requested.connect(self._on_clear_web_results)
+
         # When finish list calculates a result, update start list model
         self._finish_list.model.result_calculated.connect(self._on_result_calculated)
 
@@ -186,6 +189,17 @@ class MainWindow(QMainWindow):
         self._start_list.set_race_running(False)
         self._status.showMessage("Ready — load a start list to begin")
         self._tabs.setCurrentIndex(0)  # Switch to Start List tab
+
+    # -- Clear web results --
+
+    def _on_clear_web_results(self) -> None:
+        """Clear live results from GitHub Pages."""
+        svc = getattr(self, "_web_publish_svc", None)
+        if svc is None:
+            self._status.showMessage("Web publishing is not configured", 3000)
+            return
+        svc.clear_results()
+        self._status.showMessage("Clearing live web results...")
 
     # -- Slots --
 

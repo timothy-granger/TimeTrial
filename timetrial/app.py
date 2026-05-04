@@ -79,6 +79,7 @@ def main() -> None:
             lambda e: main_window.statusBar().showMessage(f"Publish error: {e}", 5000)
         )
         main_window._web_publish_svc = web_publish_svc
+        main_window._race_control.enable_clear_web_results(True)
 
     # Load recovered finish records into the UI after MainWindow is built
     if recoverable_id is not None and reply == QMessageBox.StandardButton.Yes:

@@ -17,6 +17,7 @@ class RaceControlWidget(QWidget):
     rider on-ramp / on-deck / in-hole display."""
 
     new_race_requested = Signal()
+    clear_web_results_requested = Signal()
 
     def __init__(
         self,
@@ -43,9 +44,12 @@ class RaceControlWidget(QWidget):
         self._btn_stop = QPushButton("Stop Race")
         self._btn_new = QPushButton("New Race")
         self._btn_stop.setEnabled(False)
+        self._btn_clear_web = QPushButton("Clear Web Results")
+        self._btn_clear_web.setEnabled(False)  # enabled when web publish service is available
         btn_row.addWidget(self._btn_start)
         btn_row.addWidget(self._btn_stop)
         btn_row.addWidget(self._btn_new)
+        btn_row.addWidget(self._btn_clear_web)
         ctrl_layout.addLayout(btn_row)
 
         self._lbl_elapsed = QLabel("Elapsed: --:--:--.---")
@@ -90,6 +94,7 @@ class RaceControlWidget(QWidget):
         self._btn_start.clicked.connect(self._on_start)
         self._btn_stop.clicked.connect(self._on_stop)
         self._btn_new.clicked.connect(self._on_new_race)
+        self._btn_clear_web.clicked.connect(self._on_clear_web_results)
 
         self._bus.elapsed_updated.connect(self._on_elapsed)
         self._bus.countdown_updated.connect(self._on_countdown)
@@ -129,6 +134,21 @@ class RaceControlWidget(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             self.new_race_requested.emit()
+
+    def _on_clear_web_results(self) -> None:
+        reply = QMessageBox.question(
+            self, "Clear Web Results",
+            "Clear the live results from the web?\n\n"
+            "This will remove all results currently visible on GitHub Pages.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.clear_web_results_requested.emit()
+
+    def enable_clear_web_results(self, enabled: bool = True) -> None:
+        """Enable the Clear Web Results button (called when web publish service is available)."""
+        self._btn_clear_web.setEnabled(enabled)
 
     # -- EventBus slots --
 
