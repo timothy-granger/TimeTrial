@@ -35,6 +35,7 @@ class AppConfig:
 
     # Starter display branding
     race_title: str = ""
+    event_info: str = ""
     logo_image: str = ""
 
     # Default file paths
@@ -96,6 +97,7 @@ def load_config(user_path: Optional[Path] = None) -> AppConfig:
         starter_font_bib=display.get("starter_font_bib", 65),
         starter_font_title=display.get("starter_font_title", 40),
         race_title=display.get("race_title", ""),
+        event_info=display.get("event_info", ""),
         logo_image=display.get("logo_image", ""),
         default_start_list=paths.get("default_start_list", "tt-start-list.csv"),
         default_finish_list=paths.get("default_finish_list", "tt-finish-list.csv"),

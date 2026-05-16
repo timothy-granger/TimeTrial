@@ -43,8 +43,8 @@ def main() -> None:
         web_publish_svc = WebPublishService(
             race, config, event_bus, results_svc,
             repo_path=repo_path,
-            race_name="SC Senior Games — Cycling Time Trial",
-            event_info="May 7, 2026",
+            race_name=config.race_title or "Greenville Spinners Time Trial",
+            event_info=config.event_info,
         )
 
     # Check for recoverable race
