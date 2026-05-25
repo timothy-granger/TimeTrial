@@ -29,14 +29,29 @@ def sample_csv(tmp_path: Path) -> Path:
     with open(csv_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([
+            "Timestamp", "First Name", "Last Name",
+            "Category", "Preferred Start Window",
+            "Emergency Contact", "Emergency Contact Phone"
+        ])
+        writer.writerow(["5/20/2026 9:00", "John", "Smith", "Merckx - Men", "Early (6:00 - 6:15)", "Jane Smith", "555-0101"])
+        writer.writerow(["5/20/2026 9:05", "Sarah", "Jones", "Women (4/U)", "Late (6:31 - 6:45)", "Tom Jones", "555-0102"])
+        writer.writerow(["5/20/2026 9:10", "Maria", "Garcia", "Merckx - Women", "Early (6:00 - 6:15)", "Luis Garcia", "555-0103"])
+        writer.writerow(["5/20/2026 9:15", "Chris", "Brown", "Men (4/5/U)", "Middle (6:16 - 6:30)", "Pat Brown", "555-0104"])
+        writer.writerow(["5/20/2026 9:20", "Robert", "Davis", "Masters 60+ - Men", "Early (6:00 - 6:15)", "Sue Davis", "555-0105"])
+    return csv_path
+
+
+@pytest.fixture
+def sample_csv_no_ec(tmp_path: Path) -> Path:
+    """Create a sample CSV without emergency contact columns (backward compat)."""
+    csv_path = tmp_path / "registrations_old.csv"
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
             "Timestamp", "Last Name", "First Name",
             "Category", "Preferred Start Window"
         ])
         writer.writerow(["5/20/2026 9:00", "Smith", "John", "Merckx - Men", "Early (6:00 - 6:15)"])
-        writer.writerow(["5/20/2026 9:05", "Jones", "Sarah", "Women (4/U)", "Late (6:31 - 6:45)"])
-        writer.writerow(["5/20/2026 9:10", "Garcia", "Maria", "Merckx - Women", "Early (6:00 - 6:15)"])
-        writer.writerow(["5/20/2026 9:15", "Brown", "Chris", "Men (4/5/U)", "Middle (6:16 - 6:30)"])
-        writer.writerow(["5/20/2026 9:20", "Davis", "Robert", "Masters 60+ - Men", "Early (6:00 - 6:15)"])
     return csv_path
 
 
@@ -48,9 +63,10 @@ def utf8_bom_csv(tmp_path: Path) -> Path:
         writer = csv.writer(f)
         writer.writerow([
             "Timestamp", "Last Name", "First Name",
-            "Category", "Preferred Start Window"
+            "Category", "Preferred Start Window",
+            "Emergency Contact", "Emergency Contact Phone"
         ])
-        writer.writerow(["5/20/2026 9:00", "Miller", "James", "Men (P/1/2/3)", "Early (6:00 - 6:15)"])
+        writer.writerow(["5/20/2026 9:00", "Miller", "James", "Men (P/1/2/3)", "Early (6:00 - 6:15)", "Ann Miller", "555-0200"])
     return csv_path
 
 
@@ -135,32 +151,32 @@ class TestParseRegistrations:
 class TestBuildStartList:
     def test_bib_assignment(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs, bib_start=1, bib_end=100)
+        riders, _ec = build_start_list(regs, bib_start=1, bib_end=100)
         bibs = [r.bib_number for r in riders]
         assert bibs == ["1", "2", "3", "4", "5"]
 
     def test_custom_bib_range(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs, bib_start=50, bib_end=100)
+        riders, _ec = build_start_list(regs, bib_start=50, bib_end=100)
         assert riders[0].bib_number == "50"
         assert riders[-1].bib_number == "54"
 
     def test_positions_are_sequential(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs, interval=0.5, start_offset=0.5)
+        riders, _ec = build_start_list(regs, interval=0.5, start_offset=0.5)
         positions = [r.start_position for r in riders]
         assert positions == [0.5, 1.0, 1.5, 2.0, 2.5]
 
     def test_custom_interval(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs, interval=1.0, start_offset=1.0)
+        riders, _ec = build_start_list(regs, interval=1.0, start_offset=1.0)
         positions = [r.start_position for r in riders]
         assert positions == [1.0, 2.0, 3.0, 4.0, 5.0]
 
     def test_early_window_before_late(self, sample_csv: Path):
         """Riders requesting Early should come before Late."""
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         # Jones requested Late, should be last
         jones_idx = next(i for i, r in enumerate(riders) if r.last_name == "Jones")
         smith_idx = next(i for i, r in enumerate(riders) if r.last_name == "Smith")
@@ -169,7 +185,7 @@ class TestBuildStartList:
     def test_category_grouping_within_window(self, sample_csv: Path):
         """Within the same window, riders should be grouped by category order."""
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         # All Early riders: Davis (Masters 60+), Smith (Merckx Men), Garcia (Merckx Women)
         early_riders = [r for r in riders if r.last_name in ("Davis", "Smith", "Garcia")]
         # Masters 60+ - Men is index 6, Merckx - Men is 10, Merckx - Women is 11
@@ -190,7 +206,7 @@ class TestWriteStartList:
 
     def test_output_format(self, sample_csv: Path, tmp_path: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         output = tmp_path / "tt-start-list.csv"
         write_start_list(output, riders)
 
@@ -203,7 +219,7 @@ class TestWriteStartList:
 
     def test_output_has_seven_columns(self, sample_csv: Path, tmp_path: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         output = tmp_path / "tt-start-list.csv"
         write_start_list(output, riders)
 
@@ -216,7 +232,7 @@ class TestWriteStartList:
 
     def test_output_has_sentinels(self, sample_csv: Path, tmp_path: Path):
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         output = tmp_path / "tt-start-list.csv"
         write_start_list(output, riders)
 
@@ -231,7 +247,7 @@ class TestWriteStartList:
         from timetrial.config.settings import load_config
 
         regs = parse_registrations(sample_csv)
-        riders = build_start_list(regs)
+        riders, _ec = build_start_list(regs)
         output = tmp_path / "tt-start-list.csv"
         write_start_list(output, riders)
 
@@ -243,6 +259,40 @@ class TestWriteStartList:
         assert start_data.riders[0].bib_number == "1"
         assert start_data.riders[0].last_name == riders[0].last_name
         assert start_data.riders[0].category == riders[0].category
+
+
+# ---------------------------------------------------------------------------
+# Emergency contact tests
+# ---------------------------------------------------------------------------
+
+class TestEmergencyContacts:
+    def test_parse_emergency_fields(self, sample_csv: Path):
+        regs = parse_registrations(sample_csv)
+        smith = next(r for r in regs if r.last_name == "Smith")
+        assert smith.emergency_contact == "Jane Smith"
+        assert smith.emergency_phone == "555-0101"
+
+    def test_emergency_contacts_in_build_result(self, sample_csv: Path):
+        regs = parse_registrations(sample_csv)
+        riders, ec = build_start_list(regs)
+        assert len(ec) == 5
+        # Check first rider's emergency contact
+        first_bib = riders[0].bib_number
+        assert ec[first_bib]["name"] != ""
+        assert ec[first_bib]["phone"] != ""
+
+    def test_backward_compat_no_ec_columns(self, sample_csv_no_ec: Path):
+        """Old CSVs without emergency contact columns should still work."""
+        regs = parse_registrations(sample_csv_no_ec)
+        assert len(regs) == 1
+        assert regs[0].emergency_contact == ""
+        assert regs[0].emergency_phone == ""
+
+    def test_backward_compat_build(self, sample_csv_no_ec: Path):
+        regs = parse_registrations(sample_csv_no_ec)
+        riders, ec = build_start_list(regs)
+        assert len(riders) == 1
+        assert len(ec) == 0
 
 
 # ---------------------------------------------------------------------------

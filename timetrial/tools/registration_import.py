@@ -1,7 +1,8 @@
 """Convert Google Forms registration CSV into a TimeTrial start list.
 
 Google Forms exports a CSV with columns:
-    Timestamp, Last Name, First Name, Category, Preferred Start Window
+    Timestamp, Last Name, First Name, Category, Preferred Start Window,
+    Emergency Contact, Emergency Contact Phone
 
 This tool reads that CSV, groups riders by preferred window then category,
 assigns bib numbers and 30-second start positions, and writes the standard
@@ -76,18 +77,27 @@ WINDOW_ORDER = {
 class Registration:
     """One registration row from the Google Forms CSV."""
 
-    __slots__ = ("last_name", "first_name", "category", "window")
+    __slots__ = (
+        "last_name", "first_name", "category", "window",
+        "emergency_contact", "emergency_phone",
+    )
 
-    def __init__(self, last: str, first: str, category: str, window: str) -> None:
+    def __init__(
+        self, last: str, first: str, category: str, window: str,
+        emergency_contact: str = "", emergency_phone: str = "",
+    ) -> None:
         self.last_name = last.strip()
         self.first_name = first.strip()
         self.category = category.strip()
         self.window = window.strip()
+        self.emergency_contact = emergency_contact.strip()
+        self.emergency_phone = emergency_phone.strip()
 
     def __repr__(self) -> str:
         return (
             f"Registration({self.first_name} {self.last_name}, "
-            f"{self.category}, {self.window})"
+            f"{self.category}, {self.window}, "
+            f"EC: {self.emergency_contact} {self.emergency_phone})"
         )
 
 
@@ -100,6 +110,8 @@ def parse_registrations(path: Path) -> list[Registration]:
         First Name
         Category
         Preferred Start Window
+        Emergency Contact       (optional)
+        Emergency Contact Phone (optional)
 
     Raises ValueError on missing columns or empty required fields.
     """
@@ -117,6 +129,10 @@ def parse_registrations(path: Path) -> list[Registration]:
         "category": "Category",
         "preferred start window": "Preferred Start Window",
     }
+    optional = {
+        "emergency contact": "Emergency Contact",
+        "emergency contact phone": "Emergency Contact Phone",
+    }
 
     # Resolve actual column names from the header
     resolved: dict[str, str] = {}
@@ -129,12 +145,22 @@ def parse_registrations(path: Path) -> list[Registration]:
             )
         resolved[key] = actual
 
+    # Resolve optional columns (may not exist in older CSVs)
+    resolved_optional: dict[str, str | None] = {}
+    for key, display in optional.items():
+        resolved_optional[key] = field_map.get(key)
+
     registrations: list[Registration] = []
     for row_num, row in enumerate(reader, start=2):
         last = row[resolved["last name"]].strip()
         first = row[resolved["first name"]].strip()
         category = row[resolved["category"]].strip()
         window = row[resolved["preferred start window"]].strip()
+
+        ec_col = resolved_optional.get("emergency contact")
+        ec_name = row[ec_col].strip() if ec_col and ec_col in row else ""
+        ec_phone_col = resolved_optional.get("emergency contact phone")
+        ec_phone = row[ec_phone_col].strip() if ec_phone_col and ec_phone_col in row else ""
 
         if not last or not first:
             print(f"  Warning: row {row_num} missing name, skipping: {row}")
@@ -158,7 +184,7 @@ def parse_registrations(path: Path) -> list[Registration]:
                 f"for {first} {last} — placing at end"
             )
 
-        registrations.append(Registration(last, first, category, window))
+        registrations.append(Registration(last, first, category, window, ec_name, ec_phone))
 
     return registrations
 
@@ -184,13 +210,14 @@ def build_start_list(
     bib_end: int = 100,
     interval: float = 0.5,
     start_offset: float = 0.5,
-) -> list[Rider]:
+) -> tuple[list[Rider], dict[str, dict[str, str]]]:
     """Convert registrations into a sorted list of Riders with assigned bibs.
 
     Riders are sorted by preferred window, then by category order, then by
     last name.  Bib numbers are assigned sequentially from bib_start.
 
-    Returns a list of Rider objects ready for CSV export.
+    Returns a tuple of (riders, emergency_contacts) where emergency_contacts
+    maps bib number to {"name": ..., "phone": ...}.
     """
     sorted_regs = sorted(registrations, key=_sort_key)
 
@@ -203,6 +230,7 @@ def build_start_list(
         )
 
     riders: list[Rider] = []
+    emergency_contacts: dict[str, dict[str, str]] = {}
     for i, reg in enumerate(sorted_regs):
         bib = str(bib_start + i)
         position = start_offset + (i * interval)
@@ -214,8 +242,13 @@ def build_start_list(
             start_position=position,
         )
         riders.append(rider)
+        if reg.emergency_contact or reg.emergency_phone:
+            emergency_contacts[bib] = {
+                "name": reg.emergency_contact,
+                "phone": reg.emergency_phone,
+            }
 
-    return riders
+    return riders, emergency_contacts
 
 
 # ---------------------------------------------------------------------------
@@ -261,6 +294,26 @@ def print_start_list(riders: list[Rider]) -> None:
 
         pos = _format_position(r.start_position)
         print(f"{r.bib_number:>4}  {r.last_name:<20} {r.first_name:<15} {r.category:<25} {pos:>5}")
+
+
+def print_emergency_contacts(
+    riders: list[Rider],
+    emergency_contacts: dict[str, dict[str, str]],
+) -> None:
+    """Print emergency contact info for all riders."""
+    if not emergency_contacts:
+        return
+    print(f"\n{'Bib':>4}  {'Rider':<30} {'Emergency Contact':<25} {'Phone':<15}")
+    print("-" * 78)
+    for r in riders:
+        ec = emergency_contacts.get(r.bib_number, {})
+        ec_name = ec.get("name", "")
+        ec_phone = ec.get("phone", "")
+        if ec_name or ec_phone:
+            print(
+                f"{r.bib_number:>4}  {r.first_name + ' ' + r.last_name:<30} "
+                f"{ec_name:<25} {ec_phone:<15}"
+            )
 
 
 def print_summary(riders: list[Rider]) -> None:
@@ -328,12 +381,14 @@ def publish_start_list(
     event_info: str = "",
     race_time: str = "18:00",
     repo_path: Path = DEFAULT_REPO_PATH,
+    emergency_contacts: dict[str, dict[str, str]] | None = None,
 ) -> None:
     """Write startlist.json to the GitHub Pages repo and push."""
     if not repo_path.exists():
         print(f"Error: repo not found at {repo_path}")
         sys.exit(1)
 
+    ec = emergency_contacts or {}
     data = {
         "race_name": race_name,
         "event_info": event_info,
@@ -349,6 +404,10 @@ def publish_start_list(
             }
             for r in riders
         ],
+        "emergency_contacts": {
+            bib: {"name": info["name"], "phone": info["phone"]}
+            for bib, info in ec.items()
+        },
     }
 
     json_path = repo_path / "startlist.json"
@@ -415,7 +474,7 @@ def main() -> None:
         sys.exit(0)
 
     # Build start list
-    riders = build_start_list(
+    riders, emergency_contacts = build_start_list(
         registrations,
         bib_start=args.bib_start,
         bib_end=args.bib_end,
@@ -425,6 +484,7 @@ def main() -> None:
 
     # Show preview
     print_start_list(riders)
+    print_emergency_contacts(riders, emergency_contacts)
     print_summary(riders)
 
     # Write output
@@ -454,6 +514,7 @@ def main() -> None:
             race_name=race_name,
             event_info=event_info,
             race_time=args.race_time,
+            emergency_contacts=emergency_contacts,
         )
 
 
