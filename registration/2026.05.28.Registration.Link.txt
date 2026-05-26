@@ -1,0 +1,6 @@
+
+2026 TT #1 Registration Link
+https://docs.google.com/forms/d/e/1FAIpQLSf2RbjFp_8K9AC3_NCr1A293IkLuuUj2OF5zPB_NLUfMafOPw/viewform?usp=publish-editor
+
+Time Trial Software Repo
+ https://github.com/timothy-granger/TimeTrial
