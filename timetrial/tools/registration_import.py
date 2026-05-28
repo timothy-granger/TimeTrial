@@ -79,12 +79,13 @@ class Registration:
 
     __slots__ = (
         "last_name", "first_name", "category", "window",
-        "emergency_contact", "emergency_phone",
+        "emergency_contact", "emergency_phone", "timestamp",
     )
 
     def __init__(
         self, last: str, first: str, category: str, window: str,
         emergency_contact: str = "", emergency_phone: str = "",
+        timestamp: datetime | None = None,
     ) -> None:
         self.last_name = last.strip()
         self.first_name = first.strip()
@@ -92,6 +93,7 @@ class Registration:
         self.window = window.strip()
         self.emergency_contact = emergency_contact.strip()
         self.emergency_phone = emergency_phone.strip()
+        self.timestamp = timestamp or datetime.min
 
     def __repr__(self) -> str:
         return (
@@ -130,6 +132,7 @@ def parse_registrations(path: Path) -> list[Registration]:
         "preferred start window": "Preferred Start Window",
     }
     optional = {
+        "timestamp": "Timestamp",
         "emergency contact": "Emergency Contact",
         "emergency contact phone": "Emergency Contact Phone",
     }
@@ -156,6 +159,15 @@ def parse_registrations(path: Path) -> list[Registration]:
         first = row[resolved["first name"]].strip()
         category = row[resolved["category"]].strip()
         window = row[resolved["preferred start window"]].strip()
+
+        # Parse timestamp for registration-order priority
+        ts_col = resolved_optional.get("timestamp")
+        timestamp = datetime.min
+        if ts_col and ts_col in row and row[ts_col].strip():
+            try:
+                timestamp = datetime.strptime(row[ts_col].strip(), "%m/%d/%Y %H:%M:%S")
+            except ValueError:
+                pass  # fall back to datetime.min
 
         ec_col = resolved_optional.get("emergency contact")
         ec_name = row[ec_col].strip() if ec_col and ec_col in row else ""
@@ -184,7 +196,7 @@ def parse_registrations(path: Path) -> list[Registration]:
                 f"for {first} {last} — placing at end"
             )
 
-        registrations.append(Registration(last, first, category, window, ec_name, ec_phone))
+        registrations.append(Registration(last, first, category, window, ec_name, ec_phone, timestamp))
 
     return registrations
 
@@ -193,15 +205,23 @@ def parse_registrations(path: Path) -> list[Registration]:
 # Start list generation
 # ---------------------------------------------------------------------------
 
-def _sort_key(reg: Registration) -> tuple[int, int, str, str]:
-    """Sort registrations by window preference, then category order, then name."""
+def _sort_key(reg: Registration) -> tuple[int, datetime]:
+    """Sort registrations by window preference, then registration timestamp."""
     window_rank = WINDOW_ORDER.get(reg.window, 999)
-    cat_rank = (
-        CLUB_CATEGORIES.index(reg.category)
-        if reg.category in CLUB_CATEGORIES
-        else 999
-    )
-    return (window_rank, cat_rank, reg.last_name.lower(), reg.first_name.lower())
+    return (window_rank, reg.timestamp)
+
+
+# Window definitions: (start_position, max_slots) for 30-sec intervals
+# Early  = 0:00-15:00 → positions 0.5 to 15.0 → 30 slots
+# Middle = 15:00-30:00 → positions 15.5 to 30.0 → 30 slots
+# Late   = 30:00-45:00 → positions 30.5 to 45.0 → 30 slots
+WINDOW_SLOTS = {
+    "Early (6:00 - 6:15)": (0.5, 30),
+    "Middle (6:16 - 6:30)": (15.5, 30),
+    "Late (6:31 - 6:45)": (30.5, 30),
+}
+
+WINDOW_NAMES = list(WINDOW_ORDER.keys())
 
 
 def build_start_list(
@@ -213,8 +233,10 @@ def build_start_list(
 ) -> tuple[list[Rider], dict[str, dict[str, str]]]:
     """Convert registrations into a sorted list of Riders with assigned bibs.
 
-    Riders are sorted by preferred window, then by category order, then by
-    last name.  Bib numbers are assigned sequentially from bib_start.
+    Riders are placed into their preferred start window (Early/Middle/Late),
+    ordered by registration timestamp (earliest first). If a window is full,
+    the rider overflows to the next window. Bib numbers are assigned
+    sequentially in final start order.
 
     Returns a tuple of (riders, emergency_contacts) where emergency_contacts
     maps bib number to {"name": ..., "phone": ...}.
@@ -229,24 +251,77 @@ def build_start_list(
             f"Extra riders will get bibs beyond {bib_end}."
         )
 
+    # Buckets for each window: list of registrations placed there
+    window_buckets: dict[str, list[Registration]] = {w: [] for w in WINDOW_NAMES}
+
+    for reg in sorted_regs:
+        preferred = reg.window if reg.window in WINDOW_ORDER else WINDOW_NAMES[-1]
+        placed = False
+
+        # Try preferred window, then subsequent windows
+        start_idx = WINDOW_NAMES.index(preferred)
+        for idx in range(start_idx, len(WINDOW_NAMES)):
+            window = WINDOW_NAMES[idx]
+            _, max_slots = WINDOW_SLOTS[window]
+            if len(window_buckets[window]) < max_slots:
+                window_buckets[window].append(reg)
+                if idx != start_idx:
+                    print(
+                        f"  Note: {reg.first_name} {reg.last_name} bumped from "
+                        f"{preferred} to {window} (window full)"
+                    )
+                placed = True
+                break
+
+        if not placed:
+            # All windows full — append to last window beyond its capacity
+            window_buckets[WINDOW_NAMES[-1]].append(reg)
+            print(
+                f"  Warning: {reg.first_name} {reg.last_name} placed in overflow "
+                f"(all windows full)"
+            )
+
+    # Build riders in window order, filling gaps with placeholders
     riders: list[Rider] = []
     emergency_contacts: dict[str, dict[str, str]] = {}
-    for i, reg in enumerate(sorted_regs):
-        bib = str(bib_start + i)
-        position = start_offset + (i * interval)
-        rider = Rider(
-            bib_number=bib,
-            last_name=reg.last_name,
-            first_name=reg.first_name,
-            category=reg.category,
-            start_position=position,
-        )
-        riders.append(rider)
-        if reg.emergency_contact or reg.emergency_phone:
-            emergency_contacts[bib] = {
-                "name": reg.emergency_contact,
-                "phone": reg.emergency_phone,
-            }
+    bib_counter = bib_start
+    position = start_offset  # start at 0.5
+
+    for window_idx, window in enumerate(WINDOW_NAMES):
+        bucket = window_buckets[window]
+        if not bucket:
+            continue
+        window_start, _ = WINDOW_SLOTS[window]
+
+        # Fill gap from current position to this window's start with placeholders
+        while position < window_start:
+            riders.append(Rider(
+                bib_number="----",
+                last_name="----",
+                first_name="----",
+                category="----",
+                start_position=position,
+            ))
+            position += interval
+
+        # Place real riders in this window
+        for reg in bucket:
+            bib = str(bib_counter)
+            rider = Rider(
+                bib_number=bib,
+                last_name=reg.last_name,
+                first_name=reg.first_name,
+                category=reg.category,
+                start_position=position,
+            )
+            riders.append(rider)
+            if reg.emergency_contact or reg.emergency_phone:
+                emergency_contacts[bib] = {
+                    "name": reg.emergency_contact,
+                    "phone": reg.emergency_phone,
+                }
+            bib_counter += 1
+            position += interval
 
     return riders, emergency_contacts
 
@@ -280,17 +355,27 @@ def write_start_list(path: Path, riders: list[Rider]) -> None:
 
 
 def print_start_list(riders: list[Rider]) -> None:
-    """Print a formatted preview of the start list."""
+    """Print a formatted preview of the start list (skips placeholders)."""
     print(f"\n{'Bib':>4}  {'Last Name':<20} {'First Name':<15} {'Category':<25} {'Pos':>5}")
     print("-" * 75)
-    prev_window_idx = -1
-    for i, r in enumerate(riders):
-        # Insert a blank line between time windows for readability
-        minutes = r.start_position * 0.5  # rough minute estimate
-        window_idx = 0 if i < 30 else (1 if i < 60 else 2)
-        if window_idx != prev_window_idx and prev_window_idx >= 0:
-            print()
-        prev_window_idx = window_idx
+    prev_window = ""
+    for r in riders:
+        if r.is_placeholder:
+            continue
+
+        # Determine window from position
+        if r.start_position <= 15.0:
+            window = "Early (6:00 - 6:15)"
+        elif r.start_position <= 30.0:
+            window = "Middle (6:16 - 6:30)"
+        else:
+            window = "Late (6:31 - 6:45)"
+
+        if window != prev_window:
+            if prev_window:
+                print()
+            print(f"  --- {window} ---")
+            prev_window = window
 
         pos = _format_position(r.start_position)
         print(f"{r.bib_number:>4}  {r.last_name:<20} {r.first_name:<15} {r.category:<25} {pos:>5}")
@@ -320,8 +405,9 @@ def print_summary(riders: list[Rider]) -> None:
     """Print category and window distribution summary."""
     from collections import Counter
 
+    real_riders = [r for r in riders if not r.is_placeholder]
     cat_counts: Counter[str] = Counter()
-    for r in riders:
+    for r in real_riders:
         cat_counts[r.category] += 1
 
     print(f"\n{'Category':<30} {'Count':>5}")
@@ -335,9 +421,11 @@ def print_summary(riders: list[Rider]) -> None:
         if cat not in CLUB_CATEGORIES:
             print(f"{cat:<30} {count:>5}  (unknown)")
 
+    placeholders = len(riders) - len(real_riders)
+    print(f"\nTotal riders: {len(real_riders)}")
+    print(f"Total slots: {len(riders)} ({placeholders} empty)")
     total_minutes = (len(riders) - 1) * 0.5 if riders else 0
-    print(f"\nTotal riders: {len(riders)}")
-    print(f"Race duration: {total_minutes:.1f} minutes ({len(riders)} starts at 30-sec intervals)")
+    print(f"Race duration: {total_minutes:.1f} minutes")
     last_pos = _format_position(riders[-1].start_position) if riders else "0"
     print(f"Last start position: {last_pos}")
 
@@ -403,6 +491,7 @@ def publish_start_list(
                 "start_position": r.start_position,
             }
             for r in riders
+            if not r.is_placeholder
         ],
         "emergency_contacts": {
             bib: {"name": info["name"], "phone": info["phone"]}

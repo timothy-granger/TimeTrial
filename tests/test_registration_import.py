@@ -152,46 +152,55 @@ class TestBuildStartList:
     def test_bib_assignment(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
         riders, _ec = build_start_list(regs, bib_start=1, bib_end=100)
-        bibs = [r.bib_number for r in riders]
-        assert bibs == ["1", "2", "3", "4", "5"]
+        real_bibs = [r.bib_number for r in riders if not r.is_placeholder]
+        assert real_bibs == ["1", "2", "3", "4", "5"]
 
     def test_custom_bib_range(self, sample_csv: Path):
         regs = parse_registrations(sample_csv)
         riders, _ec = build_start_list(regs, bib_start=50, bib_end=100)
-        assert riders[0].bib_number == "50"
-        assert riders[-1].bib_number == "54"
+        real = [r for r in riders if not r.is_placeholder]
+        assert real[0].bib_number == "50"
+        assert real[-1].bib_number == "54"
 
-    def test_positions_are_sequential(self, sample_csv: Path):
+    def test_positions_use_time_windows(self, sample_csv: Path):
+        """Real riders are placed into their preferred time windows."""
         regs = parse_registrations(sample_csv)
-        riders, _ec = build_start_list(regs, interval=0.5, start_offset=0.5)
-        positions = [r.start_position for r in riders]
-        assert positions == [0.5, 1.0, 1.5, 2.0, 2.5]
+        riders, _ec = build_start_list(regs, interval=0.5)
+        real_positions = [r.start_position for r in riders if not r.is_placeholder]
+        # 3 Early (0.5, 1.0, 1.5), 1 Middle (15.5), 1 Late (30.5)
+        assert real_positions == [0.5, 1.0, 1.5, 15.5, 30.5]
 
-    def test_custom_interval(self, sample_csv: Path):
+    def test_filler_records_bridge_windows(self, sample_csv: Path):
+        """Placeholder fillers bridge the gap between windows."""
         regs = parse_registrations(sample_csv)
-        riders, _ec = build_start_list(regs, interval=1.0, start_offset=1.0)
+        riders, _ec = build_start_list(regs, interval=0.5)
+        # Positions should be continuous 0.5, 1.0, 1.5, 2.0, ..., 30.5
         positions = [r.start_position for r in riders]
-        assert positions == [1.0, 2.0, 3.0, 4.0, 5.0]
+        expected = [0.5 + i * 0.5 for i in range(len(riders))]
+        assert positions == expected
+        # Fillers should have bib "----"
+        fillers = [r for r in riders if r.is_placeholder]
+        assert len(fillers) > 0
+        assert all(r.bib_number == "----" for r in fillers)
 
     def test_early_window_before_late(self, sample_csv: Path):
         """Riders requesting Early should come before Late."""
         regs = parse_registrations(sample_csv)
         riders, _ec = build_start_list(regs)
-        # Jones requested Late, should be last
-        jones_idx = next(i for i, r in enumerate(riders) if r.last_name == "Jones")
-        smith_idx = next(i for i, r in enumerate(riders) if r.last_name == "Smith")
+        real = [r for r in riders if not r.is_placeholder]
+        jones_idx = next(i for i, r in enumerate(real) if r.last_name == "Jones")
+        smith_idx = next(i for i, r in enumerate(real) if r.last_name == "Smith")
         assert smith_idx < jones_idx
 
-    def test_category_grouping_within_window(self, sample_csv: Path):
-        """Within the same window, riders should be grouped by category order."""
+    def test_registration_order_within_window(self, sample_csv: Path):
+        """Within the same window, riders are ordered by registration timestamp."""
         regs = parse_registrations(sample_csv)
         riders, _ec = build_start_list(regs)
-        # All Early riders: Davis (Masters 60+), Smith (Merckx Men), Garcia (Merckx Women)
+        # All Early riders: Smith (9:00), Garcia (9:10), Davis (9:20) — by timestamp
         early_riders = [r for r in riders if r.last_name in ("Davis", "Smith", "Garcia")]
-        # Masters 60+ - Men is index 6, Merckx - Men is 10, Merckx - Women is 11
-        assert early_riders[0].last_name == "Davis"   # Masters 60+ first
-        assert early_riders[1].last_name == "Smith"    # Merckx Men next
-        assert early_riders[2].last_name == "Garcia"   # Merckx Women last
+        assert early_riders[0].last_name == "Smith"    # registered first
+        assert early_riders[1].last_name == "Garcia"   # registered second
+        assert early_riders[2].last_name == "Davis"    # registered third
 
 
 # ---------------------------------------------------------------------------
@@ -214,8 +223,9 @@ class TestWriteStartList:
 
         # Header
         assert lines[0].startswith("BIB_NUMBER")
-        # Data rows
-        assert len(lines) == 6  # header + 5 riders
+        # Data rows: 5 real riders + fillers bridging windows
+        real_lines = [l for l in lines[1:] if not l.startswith("----")]
+        assert len(real_lines) == 5
 
     def test_output_has_seven_columns(self, sample_csv: Path, tmp_path: Path):
         regs = parse_registrations(sample_csv)
@@ -255,9 +265,11 @@ class TestWriteStartList:
         svc = ImportExportService(config)
         start_data = svc.import_start_list(output)
 
-        assert len(start_data.riders) == 5
-        assert start_data.riders[0].bib_number == "1"
-        assert start_data.riders[0].last_name == riders[0].last_name
+        # Total includes fillers; filter to real riders
+        real = [r for r in start_data.riders if not r.is_placeholder]
+        assert len(real) == 5
+        assert real[0].bib_number == "1"
+        assert real[0].last_name == riders[0].last_name
         assert start_data.riders[0].category == riders[0].category
 
 
