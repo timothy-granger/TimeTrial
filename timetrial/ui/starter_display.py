@@ -159,29 +159,35 @@ class StarterDisplay(QWidget):
 
             y_cursor += int(fm_title.height() * 0.3)  # spacing after title
 
-        # --- Rider name ---
+        # --- Rider name + Countdown (vertically centered in remaining space) ---
+        header_bottom = y_cursor
+        footer_top = h - 80  # leave room for clock/bib at bottom
+
         painter.setFont(rider_font)
         fm_rider = painter.fontMetrics()
-
-        if self._rider_name:
-            text_w = fm_rider.horizontalAdvance(self._rider_name)
-            cx = (w - text_w) // 2
-            y_cursor += int(fm_rider.height() * 1.1)
-            painter.drawText(cx, y_cursor, self._rider_name)
-        else:
-            # Reserve space even when empty so countdown stays positioned
-            y_cursor += int(fm_rider.height() * 1.1)
-
-        # --- Countdown (center, huge) ---
         painter.setFont(countdown_font)
         fm_countdown = painter.fontMetrics()
 
+        # Total height of rider name + countdown block
+        rider_h = fm_rider.height()
+        countdown_h = fm_countdown.ascent()
+        block_h = rider_h + countdown_h
+        block_top = header_bottom + (footer_top - header_bottom - block_h) // 2
+
+        # Draw rider name
+        painter.setFont(rider_font)
+        y_cursor = block_top + fm_rider.ascent()
+        if self._rider_name:
+            text_w = fm_rider.horizontalAdvance(self._rider_name)
+            cx = (w - text_w) // 2
+            painter.drawText(cx, y_cursor, self._rider_name)
+
+        # Draw countdown
+        painter.setFont(countdown_font)
+        y_cursor += fm_countdown.ascent()
         if self._countdown:
             text_w = fm_countdown.horizontalAdvance(self._countdown)
             cx = (w - text_w) // 2
-            # ascent() gives the distance from baseline to top of tallest glyph
-            # Place so the top of the digits sits just below y_cursor
-            y_cursor += fm_countdown.ascent()
             painter.drawText(cx, y_cursor, self._countdown)
 
         # --- Race clock (bottom-left) ---
