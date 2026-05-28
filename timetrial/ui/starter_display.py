@@ -117,11 +117,12 @@ class StarterDisplay(QWidget):
         w = self.width()
         h = self.height()
 
-        # Fonts (sizes from config)
-        title_font = QFont("Times", self._config.starter_font_title, QFont.Weight.Bold)
-        rider_font = QFont("Times", self._config.starter_font_rider, QFont.Weight.Bold)
-        countdown_font = QFont("Times", self._config.starter_font_countdown, QFont.Weight.Bold)
-        clock_font = QFont("Times", self._config.starter_font_clock, QFont.Weight.Bold)
+        # Fonts — scale relative to window height (config sizes tuned for 1080p)
+        scale = h / 1080.0
+        title_font = QFont("Times", max(12, int(self._config.starter_font_title * scale)), QFont.Weight.Bold)
+        rider_font = QFont("Times", max(16, int(self._config.starter_font_rider * scale)), QFont.Weight.Bold)
+        countdown_font = QFont("Times", max(40, int(self._config.starter_font_countdown * scale)), QFont.Weight.Bold)
+        clock_font = QFont("Times", max(16, int(self._config.starter_font_clock * scale)), QFont.Weight.Bold)
 
         # Track vertical position
         y_cursor = 0
@@ -149,7 +150,7 @@ class StarterDisplay(QWidget):
 
             # --- Race subtitle (top center, line 2, 3/4 size) ---
             if self._config.race_subtitle:
-                subtitle_font = QFont("Times", int(self._config.starter_font_title * 0.75), QFont.Weight.Bold)
+                subtitle_font = QFont("Times", max(10, int(self._config.starter_font_title * 0.75 * scale)), QFont.Weight.Bold)
                 painter.setFont(subtitle_font)
                 fm_sub = painter.fontMetrics()
                 text_w = fm_sub.horizontalAdvance(self._config.race_subtitle)
@@ -161,7 +162,7 @@ class StarterDisplay(QWidget):
 
         # --- Rider name + Countdown (vertically centered in remaining space) ---
         header_bottom = y_cursor
-        footer_top = h - 80  # leave room for clock/bib at bottom
+        footer_top = h - int(80 * scale)  # leave room for clock/bib at bottom
 
         painter.setFont(rider_font)
         fm_rider = painter.fontMetrics()
