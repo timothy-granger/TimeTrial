@@ -45,12 +45,18 @@ class StarterDisplay(QWidget):
         self._race_start: datetime | None = None
         self._elapsed_ms: int = 0
 
-        # Load logo image if configured
+        # Load logo images if configured
         self._logo: QPixmap | None = None
         if config.logo_image:
             logo_path = Path(config.logo_image)
             if logo_path.exists():
                 self._logo = QPixmap(str(logo_path))
+
+        self._logo_left: QPixmap | None = None
+        if config.logo_image_left:
+            logo_left_path = Path(config.logo_image_left)
+            if logo_left_path.exists():
+                self._logo_left = QPixmap(str(logo_left_path))
 
         self.setWindowTitle("Starter Display")
         self.setMinimumSize(800, 600)
@@ -120,16 +126,19 @@ class StarterDisplay(QWidget):
         # Track vertical position
         y_cursor = 0
 
-        # --- Logo (top-right corner) ---
+        # --- Logos (scaled to same height) ---
+        max_logo_h = int(h * 0.15)
+
+        if self._logo_left and not self._logo_left.isNull():
+            scaled = self._logo_left.scaledToHeight(max_logo_h, Qt.TransformationMode.SmoothTransformation)
+            painter.drawPixmap(15, 10, scaled)
+
         if self._logo and not self._logo.isNull():
-            # Scale logo to fit within 15% of window height, maintaining aspect ratio
-            max_logo_h = int(h * 0.15)
             scaled = self._logo.scaledToHeight(max_logo_h, Qt.TransformationMode.SmoothTransformation)
             logo_x = w - scaled.width() - 15
-            logo_y = 10
-            painter.drawPixmap(logo_x, logo_y, scaled)
+            painter.drawPixmap(logo_x, 10, scaled)
 
-        # --- Race title (top center) ---
+        # --- Race title (top center, line 1) ---
         if self._config.race_title:
             painter.setFont(title_font)
             fm_title = painter.fontMetrics()
@@ -137,6 +146,14 @@ class StarterDisplay(QWidget):
             cx = (w - text_w) // 2
             y_cursor = int(fm_title.height() * 1.1)
             painter.drawText(cx, y_cursor, self._config.race_title)
+
+            # --- Race subtitle (top center, line 2) ---
+            if self._config.race_subtitle:
+                text_w = fm_title.horizontalAdvance(self._config.race_subtitle)
+                cx = (w - text_w) // 2
+                y_cursor += int(fm_title.height() * 1.05)
+                painter.drawText(cx, y_cursor, self._config.race_subtitle)
+
             y_cursor += int(fm_title.height() * 0.3)  # spacing after title
 
         # --- Rider name ---

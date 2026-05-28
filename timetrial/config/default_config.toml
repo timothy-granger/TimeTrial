@@ -39,9 +39,11 @@ starter_font_rider = 75
 starter_font_countdown = 400
 starter_font_clock = 65
 starter_font_bib = 65
-race_title = "Greenville Spinners Time Trial"              # Text shown at top of starter display (e.g. "Greenville Spinners Time Trial")
+race_title = "Greenville Spinners 2026"                    # First line shown at top of starter display
+race_subtitle = "Time Trial #1"                            # Second line shown below race title (empty = no subtitle)
 starter_font_title = 40      # Font size for race title
-logo_image = "D:/TimeTrial_Refactor/images/GreenvilleSpinnersNavyGreen.png"              # Path to PNG logo displayed on starter display (empty = no logo)
+logo_image = "D:/TimeTrial_Refactor/images/GreenvilleSpinnersNavyGreen.png"              # Path to PNG logo displayed on starter display right side (empty = no logo)
+logo_image_left = "D:/TimeTrial_Refactor/images/vvlogo.transparent.png"                   # Path to logo displayed on starter display left side (empty = no logo)
 
 [paths]
 default_start_list = "tt-start-list.csv"
