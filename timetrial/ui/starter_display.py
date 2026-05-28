@@ -147,11 +147,14 @@ class StarterDisplay(QWidget):
             y_cursor = int(fm_title.height() * 1.1)
             painter.drawText(cx, y_cursor, self._config.race_title)
 
-            # --- Race subtitle (top center, line 2) ---
+            # --- Race subtitle (top center, line 2, 3/4 size) ---
             if self._config.race_subtitle:
-                text_w = fm_title.horizontalAdvance(self._config.race_subtitle)
+                subtitle_font = QFont("Times", int(self._config.starter_font_title * 0.75), QFont.Weight.Bold)
+                painter.setFont(subtitle_font)
+                fm_sub = painter.fontMetrics()
+                text_w = fm_sub.horizontalAdvance(self._config.race_subtitle)
                 cx = (w - text_w) // 2
-                y_cursor += int(fm_title.height() * 1.05)
+                y_cursor += int(fm_sub.height() * 1.3)
                 painter.drawText(cx, y_cursor, self._config.race_subtitle)
 
             y_cursor += int(fm_title.height() * 0.3)  # spacing after title
