@@ -42,10 +42,8 @@ class TestLoadConfig:
 
     def test_junior_categories_loaded(self):
         config = load_config(user_path=Path("/nonexistent/path/config.toml"))
-        assert "10-14 (M)" in config.junior_categories
-        assert "15-18 (M)" in config.junior_categories
-        assert "10-14 (F)" in config.junior_categories
-        assert "15-18 (F)" in config.junior_categories
+        assert "Juniors (M)" in config.junior_categories
+        assert "Juniors (F)" in config.junior_categories
 
     def test_config_is_frozen(self):
         config = load_config(user_path=Path("/nonexistent/path/config.toml"))

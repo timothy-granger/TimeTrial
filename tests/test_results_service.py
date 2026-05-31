@@ -205,20 +205,20 @@ class TestOverallResults:
     def test_excludes_juniors(self, svc):
         results = [
             RaceResult("1", "A", "B", "Men (P/1/2/3)", "x", "00:22:00.000", 22 * 60 * 1000),
-            RaceResult("2", "C", "D", "10-14 (M)", "x", "00:20:00.000", 20 * 60 * 1000),
-            RaceResult("3", "E", "F", "15-18 (M)", "x", "00:21:00.000", 21 * 60 * 1000),
-            RaceResult("4", "G", "H", "10-14 (F)", "x", "00:19:00.000", 19 * 60 * 1000),
-            RaceResult("5", "I", "J", "15-18 (F)", "x", "00:23:00.000", 23 * 60 * 1000),
+            RaceResult("2", "C", "D", "Juniors (M)", "x", "00:20:00.000", 20 * 60 * 1000),
+            RaceResult("3", "E", "F", "Juniors (M)", "x", "00:21:00.000", 21 * 60 * 1000),
+            RaceResult("4", "G", "H", "Juniors (F)", "x", "00:19:00.000", 19 * 60 * 1000),
+            RaceResult("5", "I", "J", "Juniors (F)", "x", "00:23:00.000", 23 * 60 * 1000),
             RaceResult("6", "K", "L", "Women (P/1/2/3)", "x", "00:25:00.000", 25 * 60 * 1000),
         ]
         overall = svc.overall_results(results)
 
         assert len(overall) == 2
         bibs = [r.bib_number for r in overall]
-        assert "2" not in bibs  # 10-14 (M) excluded
-        assert "3" not in bibs  # 15-18 (M) excluded
-        assert "4" not in bibs  # 10-14 (F) excluded
-        assert "5" not in bibs  # 15-18 (F) excluded
+        assert "2" not in bibs  # Juniors (M) excluded
+        assert "3" not in bibs  # Juniors (M) excluded
+        assert "4" not in bibs  # Juniors (F) excluded
+        assert "5" not in bibs  # Juniors (F) excluded
 
     def test_sorted_fastest_first(self, svc):
         results = [
@@ -260,7 +260,7 @@ class TestGenerateResultsHtml:
     def test_juniors_in_category_but_not_overall(self, svc):
         results = [
             RaceResult("1", "A", "Adult", "Men (P/1/2/3)", "x", "00:22:00.000", 22 * 60 * 1000),
-            RaceResult("2", "B", "Junior", "10-14 (M)", "x", "00:20:00.000", 20 * 60 * 1000),
+            RaceResult("2", "B", "Junior", "Juniors (M)", "x", "00:20:00.000", 20 * 60 * 1000),
         ]
         html = svc.generate_results_html(results)
 

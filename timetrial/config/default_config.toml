@@ -13,22 +13,20 @@ names = [
     "Masters 50+ - Men",
     "Masters 50+ - Women",
     "Masters 60+ - Men",
+    "Masters 60+ - Women",
+    "Masters 70+ - Men",
+    "Masters 70+ - Women",
     "Merckx - Men",
     "Merckx - Women",
-    "10-14 (M)",
-    "15-18 (M)",
-    "10-14 (F)",
-    "15-18 (F)",
+    "Juniors (M)",
+    "Juniors (F)",
     "Hand Cycle (M)",
-    "Hand Cycle (W)",
 ]
 
 # Categories excluded from overall results
 junior_categories = [
-    "10-14 (M)",
-    "15-18 (M)",
-    "10-14 (F)",
-    "15-18 (F)",
+    "Juniors (M)",
+    "Juniors (F)",
 ]
 
 [series]
