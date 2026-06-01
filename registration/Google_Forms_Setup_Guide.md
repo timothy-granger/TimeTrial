@@ -157,6 +157,37 @@ The 2026 public entry links are recorded in `links.cheat.sheet.txt`.
 
 ---
 
+## QR Codes for Forms & Entry Lists
+
+Scannable QR codes make it easy for riders to register or check entries from a
+phone — print them for the start line or drop them into social posts.
+
+A generator script produces, for each race, three PNGs in `registration/qr/`:
+
+| File | What it is |
+|------|------------|
+| `qr_race{N}_register.png` | Registration-form QR + caption |
+| `qr_race{N}_entries.png`  | Public entry-list QR + caption |
+| `qr_sheet_race{N}.png`    | **Printable sheet** — both codes side by side under the *Greenville Spinners Time Trial — Presented by Velo Valets* title |
+
+Each code carries the club name, the race + date, and an action label
+(`Scan to Register` / `See Who's Registered`).
+
+### Generating / refreshing the codes
+1. Make sure the links in `links.cheat.sheet.txt` are current.
+2. Edit the `RACES` list (and the title strings, if the sponsor changes) at the
+   top of `timetrial/tools/make_qr_codes.py`.
+3. Run:
+   ```
+   .venv/Scripts/python.exe -m timetrial.tools.make_qr_codes
+   ```
+4. Files are written (overwritten) in `registration/qr/`. Scan one register and
+   one entries code with a phone to confirm before printing.
+
+> Requires the `qrcode` and `Pillow` packages (already in the venv).
+
+---
+
 ## Editing Categories After the Form is Live
 
 - Open the form in edit mode
