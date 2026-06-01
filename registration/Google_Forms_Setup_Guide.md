@@ -101,6 +101,51 @@ field, all categories, and the settings — you only change the title/descriptio
 
 ---
 
+## Publishing a Public Entry List (Emergency Contacts Hidden)
+
+Riders often want to see who's already registered. You can publish a live,
+read-only list that updates automatically — **without exposing emergency
+contact details**.
+
+> **Why not just share the response sheet "view only"?** Anyone with view
+> access can unhide columns or open the raw responses tab and read the
+> emergency contacts. Hidden is not private. The steps below publish *only*
+> the safe columns, so the sensitive data is never in what people can see.
+
+### 1. Add a "Public Entries" tab
+   - Open the race's linked response spreadsheet
+   - Add a new tab (the **+** at the bottom-left) and name it **`Public Entries`**
+
+### 2. Pull only the safe columns with a formula
+   - Click cell **A1** of the new tab and paste:
+     ```
+     =QUERY('Form Responses 1'!A:E, "select C, B, D, E where B is not null", 1)
+     ```
+   - This shows **First Name, Last Name, Category, Preferred Start Window**.
+     The range stops at column **E**, so the Emergency Contact columns (F, G)
+     are never referenced.
+   - **Column check:** the default layout is
+     `A Timestamp · B Last Name · C First Name · D Category · E Preferred Start Window · F Emergency Contact · G Emergency Contact Phone`.
+     If you enabled **Collect email addresses**, Google inserts an *Email*
+     column at B and shifts everything right — then use `'Form Responses 1'!A:F`
+     and `select D, C, E, F` instead. Glance at your header row to confirm.
+   - If your responses tab isn't named `Form Responses 1`, match its actual name.
+
+### 3. Publish that tab to the web
+   - **File → Share → Publish to web**
+   - Change **Entire Document** to the **`Public Entries`** sheet only
+   - Click **Publish**, then copy the generated `.../pubhtml?...` link
+
+### 4. Share the published link — and only this one
+   - Give riders the **Publish-to-web URL**. It auto-updates as people register
+     and shows just the four safe columns.
+   - ⚠️ Do **not** share the spreadsheet itself "view only" — that exposes the
+     raw responses tab with emergency contacts. Only hand out the published URL.
+
+The 2026 public entry links are recorded in `links.cheat.sheet.txt`.
+
+---
+
 ## Editing Categories After the Form is Live
 
 - Open the form in edit mode

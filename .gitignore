@@ -31,3 +31,8 @@ import_review/
 .claude/
 .~lock.*
 TimeTrialScoring.pro.user
+
+# Local-only files, overcome by events (not source)
+Compile_Final_SC_SR_Games_Start_Lists.pdf
+GitHub.Info.txt
+MAY_07_README.pdf
