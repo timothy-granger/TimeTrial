@@ -1,6 +1,6 @@
 [race]
 timer_interval_ms = 100
-start_interval_minutes = 0.5          # 30-second gaps between riders
+start_interval_minutes = 1.0          # 60-second gaps between riders (races 2-4)
 countdown_sound_trigger_seconds = 11
 time_format = "hh:mm:ss.zzz"
 

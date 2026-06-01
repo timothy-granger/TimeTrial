@@ -5,8 +5,8 @@ Google Forms exports a CSV with columns:
     Emergency Contact, Emergency Contact Phone
 
 This tool reads that CSV, groups riders by preferred window then category,
-assigns bib numbers and 30-second start positions, and writes the standard
-7-column start list CSV the app expects.
+assigns bib numbers and start positions (60-second spacing by default), and
+writes the standard 7-column start list CSV the app expects.
 
 Usage:
     python -m timetrial.tools.registration_import <input_csv> [output_csv]
@@ -18,8 +18,9 @@ Usage:
 Options:
     --bib-start N       First bib number to assign (default: 1)
     --bib-end N         Last bib number available (default: 100)
-    --interval M        Start interval in minutes (default: 0.5 = 30 sec)
-    --start-offset M    First rider's start position in minutes (default: 0.5)
+    --interval M        Start interval in minutes (default: 1.0 = 60 sec)
+    --start-offset M    First rider's start position in minutes
+                        (default: same as --interval)
     --dry-run           Print the start list to stdout without writing a file
     --publish           Publish start list to GitHub Pages (tt-live-results)
     --race-name TEXT    Race name for published start list
@@ -211,36 +212,57 @@ def _sort_key(reg: Registration) -> tuple[int, datetime]:
     return (window_rank, reg.timestamp)
 
 
-# Window definitions: (start_position, max_slots) for 30-sec intervals
-# Early  = 0:00-15:00 → positions 0.5 to 15.0 → 30 slots
-# Middle = 15:00-30:00 → positions 15.5 to 30.0 → 30 slots
-# Late   = 30:00-45:00 → positions 30.5 to 45.0 → 30 slots
-WINDOW_SLOTS = {
-    "Early (6:00 - 6:15)": (0.5, 30),
-    "Middle (6:16 - 6:30)": (15.5, 30),
-    "Late (6:31 - 6:45)": (30.5, 30),
-}
+# Each preferred window covers 15 minutes of wall clock (6:00-6:15, etc.).
+WINDOW_DURATION_MINUTES = 15
 
 WINDOW_NAMES = list(WINDOW_ORDER.keys())
+
+
+def build_window_slots(
+    interval: float, start_offset: float
+) -> dict[str, tuple[float, int]]:
+    """Return {window: (start_position, max_slots)} for the given interval.
+
+    Each window spans WINDOW_DURATION_MINUTES of wall clock. The first window
+    begins at ``start_offset``; each later window begins one duration later.
+    The slot count is how many riders fit in a window at this interval, so it
+    scales automatically with the spacing:
+
+        30-sec spacing (interval=0.5, offset=0.5) → 30 slots/window at 0.5/15.5/30.5
+        60-sec spacing (interval=1.0, offset=1.0) → 15 slots/window at 1.0/16.0/31.0
+    """
+    slots = max(1, round(WINDOW_DURATION_MINUTES / interval))
+    return {
+        name: (idx * WINDOW_DURATION_MINUTES + start_offset, slots)
+        for idx, name in enumerate(WINDOW_NAMES)
+    }
 
 
 def build_start_list(
     registrations: list[Registration],
     bib_start: int = 1,
     bib_end: int = 100,
-    interval: float = 0.5,
-    start_offset: float = 0.5,
+    interval: float = 1.0,
+    start_offset: float | None = None,
 ) -> tuple[list[Rider], dict[str, dict[str, str]]]:
     """Convert registrations into a sorted list of Riders with assigned bibs.
 
     Riders are placed into their preferred start window (Early/Middle/Late),
     ordered by registration timestamp (earliest first). If a window is full,
-    the rider overflows to the next window. Bib numbers are assigned
-    sequentially in final start order.
+    the rider overflows to the next window; once every window is full, the
+    remaining riders continue past the last window (e.g. past 6:45). Bib
+    numbers are assigned sequentially in final start order.
+
+    ``interval`` is the spacing between riders in minutes (1.0 = 60 sec).
+    ``start_offset`` is the first rider's position; it defaults to ``interval``
+    so the first rider goes off one interval after the gun.
 
     Returns a tuple of (riders, emergency_contacts) where emergency_contacts
     maps bib number to {"name": ..., "phone": ...}.
     """
+    if start_offset is None:
+        start_offset = interval
+    window_slots = build_window_slots(interval, start_offset)
     sorted_regs = sorted(registrations, key=_sort_key)
 
     available_bibs = bib_end - bib_start + 1
@@ -262,7 +284,7 @@ def build_start_list(
         start_idx = WINDOW_NAMES.index(preferred)
         for idx in range(start_idx, len(WINDOW_NAMES)):
             window = WINDOW_NAMES[idx]
-            _, max_slots = WINDOW_SLOTS[window]
+            _, max_slots = window_slots[window]
             if len(window_buckets[window]) < max_slots:
                 window_buckets[window].append(reg)
                 if idx != start_idx:
@@ -291,7 +313,7 @@ def build_start_list(
         bucket = window_buckets[window]
         if not bucket:
             continue
-        window_start, _ = WINDOW_SLOTS[window]
+        window_start, _ = window_slots[window]
 
         # Fill gap from current position to this window's start with placeholders
         while position < window_start:
@@ -424,7 +446,7 @@ def print_summary(riders: list[Rider]) -> None:
     placeholders = len(riders) - len(real_riders)
     print(f"\nTotal riders: {len(real_riders)}")
     print(f"Total slots: {len(riders)} ({placeholders} empty)")
-    total_minutes = (len(riders) - 1) * 0.5 if riders else 0
+    total_minutes = riders[-1].start_position if riders else 0
     print(f"Race duration: {total_minutes:.1f} minutes")
     last_pos = _format_position(riders[-1].start_position) if riders else "0"
     print(f"Last start position: {last_pos}")
@@ -538,8 +560,8 @@ def main() -> None:
     parser.add_argument("output_csv", nargs="?", help="Output start list path (default: same dir)")
     parser.add_argument("--bib-start", type=int, default=1, help="First bib number (default: 1)")
     parser.add_argument("--bib-end", type=int, default=100, help="Last bib available (default: 100)")
-    parser.add_argument("--interval", type=float, default=0.5, help="Start interval in minutes (default: 0.5)")
-    parser.add_argument("--start-offset", type=float, default=0.5, help="First rider position (default: 0.5)")
+    parser.add_argument("--interval", type=float, default=1.0, help="Start interval in minutes (default: 1.0 = 60 sec)")
+    parser.add_argument("--start-offset", type=float, default=None, help="First rider position (default: same as --interval)")
     parser.add_argument("--dry-run", action="store_true", help="Preview only, don't write file")
     parser.add_argument("--publish", action="store_true", help="Publish start list to GitHub Pages")
     parser.add_argument("--race-name", default="Greenville Spinners Time Trial", help="Race name for web display")

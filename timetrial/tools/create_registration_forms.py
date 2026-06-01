@@ -26,9 +26,9 @@ from timetrial.tools.registration_import import CLUB_CATEGORIES, WINDOW_ORDER
 
 EVENTS = [
     {"number": 1, "date": "2026-05-28", "label": "Race 1 — May 28, 2026"},
-    {"number": 2, "date": "2026-TBD-1", "label": "Race 2 — Date TBD"},
-    {"number": 3, "date": "2026-TBD-2", "label": "Race 3 — Date TBD"},
-    {"number": 4, "date": "2026-TBD-3", "label": "Race 4 — Date TBD"},
+    {"number": 2, "date": "2026-06-25", "label": "Race 2 — June 25, 2026"},
+    {"number": 3, "date": "2026-07-30", "label": "Race 3 — July 30, 2026"},
+    {"number": 4, "date": "2026-08-27", "label": "Race 4 — August 27, 2026"},
 ]
 
 WINDOW_LABELS = list(WINDOW_ORDER.keys())
@@ -44,6 +44,11 @@ FORM_GUIDE = """# Google Forms Setup — Greenville Spinners Time Trial Registra
 
 You'll create **4 separate Google Forms**, one for each race date.
 The steps below are for one form — repeat for each event.
+
+**Faster for races 2-4:** once Race 1's form exists, open it and use the
+**⋮ menu → Make a copy** instead of building from scratch. The copy keeps every
+field, all categories, and the settings — you only change the title/description
+(Step 2) and link a fresh response spreadsheet (Step 5).
 
 ---
 
@@ -144,9 +149,9 @@ Late arrivals are handled directly in the TimeTrial app:
 | Race | Date | Form | Sheet |
 |------|------|------|-------|
 | 1 | May 28, 2026 | Create form | Link sheet |
-| 2 | TBD | Create form | Link sheet |
-| 3 | TBD | Create form | Link sheet |
-| 4 | TBD | Create form | Link sheet |
+| 2 | June 25, 2026 | Create form | Link sheet |
+| 3 | July 30, 2026 | Create form | Link sheet |
+| 4 | August 27, 2026 | Create form | Link sheet |
 
 Fill in the Form and Sheet links as you create them.
 """

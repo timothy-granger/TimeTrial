@@ -2,6 +2,7 @@
 
 import csv
 import textwrap
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ from timetrial.tools.registration_import import (
     WINDOW_ORDER,
     Registration,
     build_start_list,
+    build_window_slots,
     parse_registrations,
     write_start_list,
     _format_start_time,
@@ -341,3 +343,72 @@ class TestFormatStartTime:
     def test_large_position(self):
         # 45 min after 18:00 = 18:45
         assert _format_start_time(45.0, "18:00") == "6:45 PM"
+
+
+# ---------------------------------------------------------------------------
+# Start interval tests (60-second spacing for 2026 races 2-4)
+# ---------------------------------------------------------------------------
+
+class TestIntervalConfig:
+    """The start interval is configurable. Races 2-4 use 60-second spacing,
+    which halves each window's capacity (15 slots instead of 30) and pushes
+    overflow riders past 6:45 instead of bumping them between windows."""
+
+    def _regs(self, count: int, window: str, category: str = "Merckx - Men"):
+        """Build `count` registrations in one window with increasing timestamps."""
+        base = datetime(2026, 6, 1, 9, 0, 0)
+        return [
+            Registration(
+                f"Last{i:02d}", f"First{i:02d}", category, window,
+                timestamp=base + timedelta(seconds=i),
+            )
+            for i in range(count)
+        ]
+
+    def test_window_slots_thirty_second_unchanged(self):
+        """30-second spacing keeps the original 30-slot windows (regression)."""
+        early, middle, late = list(WINDOW_ORDER)
+        slots = build_window_slots(interval=0.5, start_offset=0.5)
+        assert slots[early] == (0.5, 30)
+        assert slots[middle] == (15.5, 30)
+        assert slots[late] == (30.5, 30)
+
+    def test_window_slots_one_minute(self):
+        """60-second spacing gives 15 slots per window at positions 1/16/31."""
+        early, middle, late = list(WINDOW_ORDER)
+        slots = build_window_slots(interval=1.0, start_offset=1.0)
+        assert slots[early] == (1.0, 15)
+        assert slots[middle] == (16.0, 15)
+        assert slots[late] == (31.0, 15)
+
+    def test_default_interval_is_one_minute(self, sample_csv: Path):
+        """The first rider goes off at 6:01 (one 60-second interval after the gun)."""
+        regs = parse_registrations(sample_csv)
+        riders, _ec = build_start_list(regs)
+        first_real = next(r for r in riders if not r.is_placeholder)
+        assert first_real.start_position == 1.0
+
+    def test_one_minute_positions(self, sample_csv: Path):
+        """At 60-second spacing the sample's 3 Early/1 Middle/1 Late map to 1/2/3, 16, 31."""
+        regs = parse_registrations(sample_csv)
+        riders, _ec = build_start_list(regs, interval=1.0)
+        real = [r.start_position for r in riders if not r.is_placeholder]
+        assert real == [1.0, 2.0, 3.0, 16.0, 31.0]
+
+    def test_window_holds_15_then_bumps_to_next(self):
+        """The 16th Early rider bumps into Middle (6:16) once Early's 15 slots fill."""
+        early = list(WINDOW_ORDER)[0]
+        regs = self._regs(16, early)
+        riders, _ec = build_start_list(regs, interval=1.0)
+        real = [r.start_position for r in riders if not r.is_placeholder]
+        assert real == [float(i) for i in range(1, 17)]
+
+    def test_overflow_runs_past_645(self):
+        """When all windows fill, extra riders continue past 6:45 instead of stopping."""
+        late = list(WINDOW_ORDER)[2]
+        regs = self._regs(46, late)
+        riders, _ec = build_start_list(regs, interval=1.0)
+        real = [r.start_position for r in riders if not r.is_placeholder]
+        assert real[0] == 31.0
+        assert any(p > 45.0 for p in real)
+        assert real[-1] == 76.0

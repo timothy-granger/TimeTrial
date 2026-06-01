@@ -34,7 +34,7 @@ class TestLoadConfig:
         config = load_config(user_path=Path("/nonexistent/path/config.toml"))
         assert isinstance(config, AppConfig)
         assert config.timer_interval_ms == 100
-        assert config.start_interval_minutes == 0.5
+        assert config.start_interval_minutes == 1.0
         assert config.countdown_sound_trigger_seconds == 11.0
         assert len(config.categories) > 0
         assert "Men (P/1/2/3)" in config.categories
@@ -60,7 +60,7 @@ class TestLoadConfig:
         assert config.timer_interval_ms == 50
         assert config.series_points == (10, 8, 6, 4, 2)
         # Non-overridden values stay at defaults
-        assert config.start_interval_minutes == 0.5
+        assert config.start_interval_minutes == 1.0
 
     def test_display_fonts_loaded(self):
         config = load_config(user_path=Path("/nonexistent/path/config.toml"))

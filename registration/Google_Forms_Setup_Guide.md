@@ -5,6 +5,11 @@
 You'll create **4 separate Google Forms**, one for each race date.
 The steps below are for one form — repeat for each event.
 
+**Faster for races 2-4:** once Race 1's form exists, open it and use the
+**⋮ menu → Make a copy** instead of building from scratch. The copy keeps every
+field, all categories, and the settings — you only change the title/description
+(Step 2) and link a fresh response spreadsheet (Step 5).
+
 ---
 
 ## Step-by-Step: Creating the Form
@@ -119,8 +124,8 @@ Late arrivals are handled directly in the TimeTrial app:
 | Race | Date | Form | Sheet |
 |------|------|------|-------|
 | 1 | May 28, 2026 | Create form | Link sheet |
-| 2 | TBD | Create form | Link sheet |
-| 3 | TBD | Create form | Link sheet |
-| 4 | TBD | Create form | Link sheet |
+| 2 | June 25, 2026 | Create form | Link sheet |
+| 3 | July 30, 2026 | Create form | Link sheet |
+| 4 | August 27, 2026 | Create form | Link sheet |
 
 Fill in the Form and Sheet links as you create them.
