@@ -130,6 +130,17 @@ contact details**.
      column at B and shifts everything right — then use `'Form Responses 1'!A:F`
      and `select D, C, E, F` instead. Glance at your header row to confirm.
    - If your responses tab isn't named `Form Responses 1`, match its actual name.
+   - **Check the header labels.** After publishing, the list should show the
+     column names (`First Name`, `Last Name`, `Category`, `Preferred Start
+     Window`). If the published list shows a **blank header row** instead, the
+     query didn't carry the labels through — force them explicitly with a
+     `label` clause:
+     ```
+     =QUERY('Form Responses 1'!A:E, "select C, B, D, E where B is not null label C 'First Name', B 'Last Name', D 'Category', E 'Preferred Start Window'", 1)
+     ```
+     (Match the label list to your `select` order.) Empty headers don't leak
+     any data — it's purely cosmetic — but labeled columns are clearer for
+     riders.
 
 ### 3. Publish that tab to the web
    - **File → Share → Publish to web**
