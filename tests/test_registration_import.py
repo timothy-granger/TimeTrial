@@ -13,8 +13,10 @@ from timetrial.tools.registration_import import (
     Registration,
     build_start_list,
     build_window_slots,
+    find_duplicate_registrations,
     parse_registrations,
     write_start_list,
+    write_emergency_contacts,
     _format_start_time,
 )
 from timetrial.models.result import NO_RESULT_SENTINEL
@@ -194,6 +196,30 @@ class TestBuildStartList:
         smith_idx = next(i for i, r in enumerate(real) if r.last_name == "Smith")
         assert smith_idx < jones_idx
 
+    def test_bib_by_slot(self, sample_csv: Path):
+        """With bib_by_slot, a rider's bib tracks their start-time slot, so
+        empty minutes between windows consume bib numbers."""
+        regs = parse_registrations(sample_csv)
+        riders, _ec = build_start_list(regs, bib_start=30, interval=1.0, bib_by_slot=True)
+        real = [(r.start_position, r.bib_number) for r in riders if not r.is_placeholder]
+        # sample: 3 Early (pos 1,2,3), 1 Middle (pos 16), 1 Late (pos 31)
+        # slot bibs: 30,31,32 then 30+15=45 then 30+30=60
+        assert real == [(1.0, "30"), (2.0, "31"), (3.0, "32"), (16.0, "45"), (31.0, "60")]
+
+    def test_bib_by_slot_ec_keyed_by_slot_bib(self, sample_csv: Path):
+        """Emergency contacts are keyed by the slot-based bib number."""
+        regs = parse_registrations(sample_csv)
+        _riders, ec = build_start_list(regs, bib_start=30, interval=1.0, bib_by_slot=True)
+        assert "45" in ec  # the 6:16 Middle rider
+        assert "60" in ec  # the 6:31 Late rider
+
+    def test_bib_contiguous_still_default(self, sample_csv: Path):
+        """Default (no bib_by_slot) keeps contiguous bibs in start order."""
+        regs = parse_registrations(sample_csv)
+        riders, _ec = build_start_list(regs, bib_start=30, interval=1.0)
+        real = [r.bib_number for r in riders if not r.is_placeholder]
+        assert real == ["30", "31", "32", "33", "34"]
+
     def test_registration_order_within_window(self, sample_csv: Path):
         """Within the same window, riders are ordered by registration timestamp."""
         regs = parse_registrations(sample_csv)
@@ -307,6 +333,107 @@ class TestEmergencyContacts:
         riders, ec = build_start_list(regs)
         assert len(riders) == 1
         assert len(ec) == 0
+
+    def test_phone_header_with_hash(self, tmp_path: Path):
+        """Google Forms appends '#' to phone fields; the header must still match
+        so phone numbers aren't silently dropped."""
+        csv_path = tmp_path / "hash_header.csv"
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Timestamp", "First Name", "Last Name", "Category",
+                "Preferred Start Window", "Emergency Contact",
+                "Emergency Contact Phone #",
+            ])
+            writer.writerow([
+                "5/20/2026 9:00", "John", "Smith", "Merckx - Men",
+                "Early (6:00 - 6:15)", "Jane Smith", "555-0101",
+            ])
+        regs = parse_registrations(csv_path)
+        assert len(regs) == 1
+        assert regs[0].emergency_contact == "Jane Smith"
+        assert regs[0].emergency_phone == "555-0101"
+
+
+# ---------------------------------------------------------------------------
+# Local emergency-contact sheet (officials only — never published)
+# ---------------------------------------------------------------------------
+
+class TestWriteEmergencyContacts:
+    def test_contents(self, sample_csv: Path, tmp_path: Path):
+        regs = parse_registrations(sample_csv)
+        riders, ec = build_start_list(regs)
+        out = tmp_path / "ec.csv"
+        write_emergency_contacts(out, riders, ec)
+
+        rows = list(csv.reader(out.read_text(encoding="utf-8").splitlines()))
+        assert rows[0] == ["BIB", "RIDER", "CATEGORY", "EMERGENCY_CONTACT", "PHONE"]
+        data = rows[1:]
+        assert len(data) == 5  # 5 real riders, no placeholder rows
+        first = data[0]
+        assert first[0] == "1"
+        assert "Smith" in first[1]
+        assert first[3] == "Jane Smith"
+        assert first[4] == "555-0101"
+
+    def test_skips_placeholders(self, sample_csv: Path, tmp_path: Path):
+        regs = parse_registrations(sample_csv)
+        riders, ec = build_start_list(regs)
+        out = tmp_path / "ec.csv"
+        write_emergency_contacts(out, riders, ec)
+        assert "----" not in out.read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Duplicate detection tests
+# ---------------------------------------------------------------------------
+
+class TestDuplicateDetection:
+    def _csv(self, tmp_path: Path, rows: list[list[str]]) -> Path:
+        csv_path = tmp_path / "dups.csv"
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Timestamp", "First Name", "Last Name", "Category",
+                "Preferred Start Window", "Emergency Contact",
+                "Emergency Contact Phone #",
+            ])
+            writer.writerows(rows)
+        return csv_path
+
+    def test_detects_same_name_twice(self, tmp_path: Path):
+        path = self._csv(tmp_path, [
+            ["6/23/2026 11:49", "Anna", "Tabor", "Juniors (F)", "Early (6:00 - 6:15)", "Neil Tabor", "555-1"],
+            ["6/25/2026 7:26", "Anna", "Tabor", "Juniors (F)", "Early (6:00 - 6:15)", "Neil Tabor", "555-1"],
+            ["6/24/2026 9:00", "Sammy", "Clary", "Merckx - Men", "Early (6:00 - 6:15)", "Ally", "555-2"],
+        ])
+        regs = parse_registrations(path)
+        dups = find_duplicate_registrations(regs)
+        assert len(dups) == 1
+        assert len(dups[0]) == 2
+        assert dups[0][0].first_name == "Anna"
+        assert dups[0][0].last_name == "Tabor"
+
+    def test_same_last_name_different_person_not_flagged(self, tmp_path: Path):
+        """Spouses sharing a last name must NOT be flagged as duplicates."""
+        path = self._csv(tmp_path, [
+            ["6/24/2026 8:00", "Amanda", "Pospischil", "Women (4/U)", "Late (6:31 - 6:45)", "Robert", "555-1"],
+            ["6/24/2026 16:54", "Robert", "Pospischil", "Masters 70+ - Men", "Early (6:00 - 6:15)", "Amanda", "555-2"],
+        ])
+        regs = parse_registrations(path)
+        assert find_duplicate_registrations(regs) == []
+
+    def test_case_and_whitespace_insensitive(self, tmp_path: Path):
+        path = self._csv(tmp_path, [
+            ["6/23/2026 11:49", "Brooke", "Tabor", "Juniors (F)", "Early (6:00 - 6:15)", "Neil", "555-1"],
+            ["6/25/2026 7:26", "brooke ", " tabor", "Juniors (F)", "Early (6:00 - 6:15)", "Neil", "555-1"],
+        ])
+        regs = parse_registrations(path)
+        assert len(find_duplicate_registrations(regs)) == 1
+
+    def test_no_duplicates_clean_list(self, sample_csv: Path):
+        regs = parse_registrations(sample_csv)
+        assert find_duplicate_registrations(regs) == []
 
 
 # ---------------------------------------------------------------------------

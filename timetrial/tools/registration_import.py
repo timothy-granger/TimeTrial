@@ -75,6 +75,16 @@ WINDOW_ORDER = {
 # Parsing
 # ---------------------------------------------------------------------------
 
+def _normalize_header(name: str) -> str:
+    """Normalize a CSV header for flexible, order-independent matching.
+
+    Lowercases, drops '#' characters, and collapses whitespace so Google
+    Forms variants like ``Emergency Contact Phone #`` match the expected
+    ``emergency contact phone`` (Google appends '#' to phone-number fields).
+    """
+    return " ".join(name.replace("#", " ").split()).lower()
+
+
 class Registration:
     """One registration row from the Google Forms CSV."""
 
@@ -125,7 +135,7 @@ def parse_registrations(path: Path) -> list[Registration]:
     if reader.fieldnames is None:
         raise ValueError(f"Empty CSV file: {path}")
 
-    field_map = {f.strip().lower(): f for f in reader.fieldnames}
+    field_map = {_normalize_header(f): f for f in reader.fieldnames}
     required = {
         "last name": "Last Name",
         "first name": "First Name",
@@ -202,6 +212,26 @@ def parse_registrations(path: Path) -> list[Registration]:
     return registrations
 
 
+def find_duplicate_registrations(
+    registrations: list[Registration],
+) -> list[list[Registration]]:
+    """Group registrations that share the same (first, last) name.
+
+    Returns a list of groups, each holding 2+ registrations with the same
+    normalized name — a likely duplicate sign-up (e.g. a rider who registered
+    twice). The tool never auto-removes these; a human reviews the warning and
+    decides. Riders who merely share a last name (e.g. spouses) are NOT flagged
+    because the first name is part of the key.
+    """
+    from collections import defaultdict
+
+    groups: dict[tuple[str, str], list[Registration]] = defaultdict(list)
+    for reg in registrations:
+        key = (reg.first_name.strip().lower(), reg.last_name.strip().lower())
+        groups[key].append(reg)
+    return [g for g in groups.values() if len(g) > 1]
+
+
 # ---------------------------------------------------------------------------
 # Start list generation
 # ---------------------------------------------------------------------------
@@ -244,14 +274,22 @@ def build_start_list(
     bib_end: int = 100,
     interval: float = 1.0,
     start_offset: float | None = None,
+    bib_by_slot: bool = False,
 ) -> tuple[list[Rider], dict[str, dict[str, str]]]:
     """Convert registrations into a sorted list of Riders with assigned bibs.
 
     Riders are placed into their preferred start window (Early/Middle/Late),
     ordered by registration timestamp (earliest first). If a window is full,
     the rider overflows to the next window; once every window is full, the
-    remaining riders continue past the last window (e.g. past 6:45). Bib
-    numbers are assigned sequentially in final start order.
+    remaining riders continue past the last window (e.g. past 6:45).
+
+    Bib assignment depends on ``bib_by_slot``:
+        False (default) — bibs run contiguously in start order (Race 1 style):
+            the next rider always gets the next number regardless of gaps.
+        True — a rider's bib is tied to their start-time slot: the slot at
+            ``start_offset`` is ``bib_start`` and each later slot increments by
+            one, so empty minutes between windows still consume bib numbers
+            (e.g. a 6:16 rider becomes #45 when 6:01 is #30 at 60-sec spacing).
 
     ``interval`` is the spacing between riders in minutes (1.0 = 60 sec).
     ``start_offset`` is the first rider's position; it defaults to ``interval``
@@ -328,7 +366,11 @@ def build_start_list(
 
         # Place real riders in this window
         for reg in bucket:
-            bib = str(bib_counter)
+            if bib_by_slot:
+                slot_index = round((position - start_offset) / interval)
+                bib = str(bib_start + slot_index)
+            else:
+                bib = str(bib_counter)
             rider = Rider(
                 bib_number=bib,
                 last_name=reg.last_name,
@@ -374,6 +416,33 @@ def write_start_list(path: Path, riders: list[Rider]) -> None:
         )
 
     path.write_text("\r\n".join(lines) + "\r\n", encoding="utf-8", newline="")
+
+
+def write_emergency_contacts(
+    path: Path,
+    riders: list[Rider],
+    emergency_contacts: dict[str, dict[str, str]],
+) -> None:
+    """Write a LOCAL emergency-contact reference CSV for race-day officials.
+
+    This file is for on-site use only and is NEVER published to the web.
+    Columns: BIB, RIDER, CATEGORY, EMERGENCY_CONTACT, PHONE. Placeholder
+    (filler) slots are skipped.
+    """
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["BIB", "RIDER", "CATEGORY", "EMERGENCY_CONTACT", "PHONE"])
+        for r in riders:
+            if r.is_placeholder:
+                continue
+            ec = emergency_contacts.get(r.bib_number, {})
+            writer.writerow([
+                r.bib_number,
+                f"{r.first_name} {r.last_name}".strip(),
+                r.category,
+                ec.get("name", ""),
+                ec.get("phone", ""),
+            ])
 
 
 def print_start_list(riders: list[Rider]) -> None:
@@ -567,6 +636,8 @@ def main() -> None:
     parser.add_argument("--race-name", default="Greenville Spinners Time Trial", help="Race name for web display")
     parser.add_argument("--event-info", default="", help="Event info (e.g. date)")
     parser.add_argument("--race-time", default="18:00", help="Race start time HH:MM (default: 18:00)")
+    parser.add_argument("--emergency-csv", help="Write a LOCAL emergency-contact reference CSV for officials (never published)")
+    parser.add_argument("--bib-by-slot", action="store_true", help="Bib number tracks the start-time slot (empty minutes consume numbers); default is contiguous per rider")
 
     args = parser.parse_args()
 
@@ -584,6 +655,18 @@ def main() -> None:
         print("No registrations to process.")
         sys.exit(0)
 
+    # Warn about likely duplicate sign-ups (does not auto-remove — review first)
+    duplicates = find_duplicate_registrations(registrations)
+    if duplicates:
+        print(f"\n  WARNING: {len(duplicates)} possible duplicate rider(s) -- review before publishing:")
+        for group in duplicates:
+            r = group[0]
+            times = ", ".join(
+                reg.timestamp.strftime("%m/%d %H:%M") if reg.timestamp != datetime.min else "?"
+                for reg in group
+            )
+            print(f"    {r.first_name} {r.last_name} appears {len(group)}x (registered: {times})")
+
     # Build start list
     riders, emergency_contacts = build_start_list(
         registrations,
@@ -591,6 +674,7 @@ def main() -> None:
         bib_end=args.bib_end,
         interval=args.interval,
         start_offset=args.start_offset,
+        bib_by_slot=args.bib_by_slot,
     )
 
     # Show preview
@@ -606,6 +690,12 @@ def main() -> None:
     else:
         print("\n(Dry run — no file written)")
 
+    # Optional LOCAL emergency-contact sheet (officials only — never published)
+    if args.emergency_csv and not args.dry_run:
+        ec_path = Path(args.emergency_csv)
+        write_emergency_contacts(ec_path, riders, emergency_contacts)
+        print(f"Emergency contact sheet written to: {ec_path}")
+
     # Publish to GitHub Pages
     if args.publish:
         from timetrial.config.settings import load_config
@@ -620,12 +710,13 @@ def main() -> None:
         if event_info == parser.get_default("event_info") and config.event_info:
             event_info = config.event_info
 
+        # Emergency contacts are intentionally NOT published: startlist.json
+        # lives in a public repo. EC data stays local (see --emergency-csv).
         publish_start_list(
             riders,
             race_name=race_name,
             event_info=event_info,
             race_time=args.race_time,
-            emergency_contacts=emergency_contacts,
         )
 
 
