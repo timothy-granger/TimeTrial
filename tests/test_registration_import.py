@@ -539,3 +539,80 @@ class TestIntervalConfig:
         assert real[0] == 31.0
         assert any(p > 45.0 for p in real)
         assert real[-1] == 76.0
+
+
+class TestStartListPayload:
+    """The published startlist.json payload, with optional empty-slot rows."""
+
+    @staticmethod
+    def _bib_by_slot_riders() -> list:
+        """Real riders at slots 1-2 and 16, with the 3-15 gap as placeholders.
+
+        Mirrors bib-by-slot output where bib == start position: an Early pair,
+        the empty minutes before the Middle window, then a Middle rider.
+        """
+        from timetrial.models.rider import Rider
+
+        riders = [
+            Rider("1", "Clary", "Sammy", "Merckx - Men", 1.0),
+            Rider("2", "Tabor", "Brooke", "Juniors (F)", 2.0),
+        ]
+        for pos in range(3, 16):
+            riders.append(Rider("----", "----", "----", "----", float(pos)))
+        riders.append(Rider("16", "Askew", "Mike", "Masters 60+ - Men", 16.0))
+        return riders
+
+    def test_excludes_empty_slots_by_default(self):
+        """Without include_empty_slots the payload holds only real riders (legacy behavior)."""
+        from timetrial.tools.registration_import import build_startlist_payload
+
+        payload = build_startlist_payload(self._bib_by_slot_riders())
+        bibs = [e["bib"] for e in payload["start_list"]]
+        assert bibs == ["1", "2", "16"]
+        assert all(not e.get("placeholder") for e in payload["start_list"])
+
+    def test_includes_empty_slots_with_computed_bibs(self):
+        """include_empty_slots emits the open minutes as blank-name rows numbered by slot."""
+        from timetrial.tools.registration_import import (
+            build_startlist_payload,
+            _format_start_time,
+        )
+
+        riders = self._bib_by_slot_riders()
+        payload = build_startlist_payload(
+            riders, include_empty_slots=True,
+            bib_start=1, start_offset=1.0, interval=1.0,
+        )
+        entries = payload["start_list"]
+
+        # 2 real + 13 empty + 1 real = every slot represented
+        assert len(entries) == 16
+
+        empties = [e for e in entries if e["placeholder"]]
+        assert [e["bib"] for e in empties] == [str(p) for p in range(3, 16)]
+
+        # An open slot: numbered, timed, but no rider identity
+        slot = empties[0]  # position 3.0
+        assert slot["bib"] == "3"
+        assert slot["first_name"] == ""
+        assert slot["last_name"] == ""
+        assert slot["category"] == ""
+        assert slot["start_time"] == _format_start_time(3.0)
+
+        # Real riders untouched and still flagged non-placeholder
+        reals = [e for e in entries if not e["placeholder"]]
+        assert [e["bib"] for e in reals] == ["1", "2", "16"]
+        assert reals[-1]["first_name"] == "Mike"
+
+    def test_empty_slot_bibs_respect_bib_start(self):
+        """Slot bibs are anchored to bib_start (e.g. a Race-2 style start of 30)."""
+        from timetrial.tools.registration_import import build_startlist_payload
+
+        riders = self._bib_by_slot_riders()
+        payload = build_startlist_payload(
+            riders, include_empty_slots=True,
+            bib_start=30, start_offset=1.0, interval=1.0,
+        )
+        empties = [e for e in payload["start_list"] if e["placeholder"]]
+        # slot at position 3 -> 30 + (3-1) = 32
+        assert empties[0]["bib"] == "32"

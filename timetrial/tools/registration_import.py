@@ -554,6 +554,79 @@ def _format_start_time(position: float, race_time: str = "18:00") -> str:
     return f"{display_hour}:{minute:02d} {period}"
 
 
+def _slot_bib(
+    position: float, bib_start: int, start_offset: float, interval: float
+) -> str:
+    """Return the bib number a start-time slot maps to under bib-by-slot rules.
+
+    Mirrors ``build_start_list``'s bib-by-slot math so an empty slot shows the
+    number it reserves (e.g. the open 6:08 minute is bib 8 when 6:01 is bib 1).
+    """
+    slot_index = round((position - start_offset) / interval)
+    return str(bib_start + slot_index)
+
+
+def build_startlist_payload(
+    riders: list[Rider],
+    race_name: str = "Greenville Spinners Time Trial",
+    event_info: str = "",
+    race_time: str = "18:00",
+    emergency_contacts: dict[str, dict[str, str]] | None = None,
+    include_empty_slots: bool = False,
+    bib_start: int = 1,
+    start_offset: float = 1.0,
+    interval: float = 1.0,
+) -> dict:
+    """Build the startlist.json payload dict (pure — no file or git I/O).
+
+    Real riders always appear. When ``include_empty_slots`` is True the open
+    minutes between/within windows are also emitted as ``placeholder`` rows —
+    numbered by their reserved slot bib and timed, but with blank name and
+    category — so the public list shows the gaps instead of hiding them. Empty
+    slots only carry a meaningful bib under bib-by-slot numbering, so callers
+    should only enable this when publishing a bib-by-slot start list.
+
+    Emergency contacts are accepted but only included if explicitly passed; the
+    CLI never passes them (see the privacy note in ``main``).
+    """
+    ec = emergency_contacts or {}
+    entries: list[dict] = []
+    for r in riders:
+        if r.is_placeholder:
+            if not include_empty_slots:
+                continue
+            entries.append({
+                "bib": _slot_bib(r.start_position, bib_start, start_offset, interval),
+                "first_name": "",
+                "last_name": "",
+                "category": "",
+                "start_time": _format_start_time(r.start_position, race_time),
+                "start_position": r.start_position,
+                "placeholder": True,
+            })
+        else:
+            entries.append({
+                "bib": r.bib_number,
+                "first_name": r.first_name,
+                "last_name": r.last_name,
+                "category": r.category,
+                "start_time": _format_start_time(r.start_position, race_time),
+                "start_position": r.start_position,
+                "placeholder": False,
+            })
+
+    return {
+        "race_name": race_name,
+        "event_info": event_info,
+        "updated_at": datetime.now().isoformat(),
+        "start_list": entries,
+        "emergency_contacts": {
+            bib: {"name": info["name"], "phone": info["phone"]}
+            for bib, info in ec.items()
+        },
+    }
+
+
 def publish_start_list(
     riders: list[Rider],
     race_name: str = "Greenville Spinners Time Trial",
@@ -561,34 +634,28 @@ def publish_start_list(
     race_time: str = "18:00",
     repo_path: Path = DEFAULT_REPO_PATH,
     emergency_contacts: dict[str, dict[str, str]] | None = None,
+    include_empty_slots: bool = False,
+    bib_start: int = 1,
+    start_offset: float = 1.0,
+    interval: float = 1.0,
 ) -> None:
     """Write startlist.json to the GitHub Pages repo and push."""
     if not repo_path.exists():
         print(f"Error: repo not found at {repo_path}")
         sys.exit(1)
 
-    ec = emergency_contacts or {}
-    data = {
-        "race_name": race_name,
-        "event_info": event_info,
-        "updated_at": datetime.now().isoformat(),
-        "start_list": [
-            {
-                "bib": r.bib_number,
-                "first_name": r.first_name,
-                "last_name": r.last_name,
-                "category": r.category,
-                "start_time": _format_start_time(r.start_position, race_time),
-                "start_position": r.start_position,
-            }
-            for r in riders
-            if not r.is_placeholder
-        ],
-        "emergency_contacts": {
-            bib: {"name": info["name"], "phone": info["phone"]}
-            for bib, info in ec.items()
-        },
-    }
+    data = build_startlist_payload(
+        riders,
+        race_name=race_name,
+        event_info=event_info,
+        race_time=race_time,
+        emergency_contacts=emergency_contacts,
+        include_empty_slots=include_empty_slots,
+        bib_start=bib_start,
+        start_offset=start_offset,
+        interval=interval,
+    )
+    real_count = sum(1 for r in riders if not r.is_placeholder)
 
     json_path = repo_path / "startlist.json"
     json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
@@ -607,9 +674,9 @@ def publish_start_list(
             raise RuntimeError(f"git {' '.join(args)} failed: {result.stderr.strip()}")
         return result.stdout
 
-    print(f"Publishing start list ({len(riders)} riders) to GitHub Pages...")
+    print(f"Publishing start list ({real_count} riders) to GitHub Pages...")
     git("add", "startlist.json")
-    git("commit", "-m", f"Publish start list: {len(riders)} riders")
+    git("commit", "-m", f"Publish start list: {real_count} riders")
     git("push")
     print(f"Start list published to GitHub Pages")
     print(f"Riders can view at: https://timothy-granger.github.io/tt-live-results/")
@@ -712,11 +779,17 @@ def main() -> None:
 
         # Emergency contacts are intentionally NOT published: startlist.json
         # lives in a public repo. EC data stays local (see --emergency-csv).
+        # In bib-by-slot mode the open minutes carry meaningful slot numbers, so
+        # publish them as blank-name rows to make the start-time gaps visible.
         publish_start_list(
             riders,
             race_name=race_name,
             event_info=event_info,
             race_time=args.race_time,
+            include_empty_slots=args.bib_by_slot,
+            bib_start=args.bib_start,
+            start_offset=args.start_offset if args.start_offset is not None else args.interval,
+            interval=args.interval,
         )
 
 
