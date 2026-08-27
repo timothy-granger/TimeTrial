@@ -1,7 +1,7 @@
 """Generate a printable QR code for the live results page.
 
 Usage:
-    python -m timetrial.tools.generate_qr [url] [output_file]
+    python -m timetrial.tools.generate_qr [url] [output_file] [title]
 
 Defaults:
     url: https://timothy-granger.github.io/tt-live-results/
@@ -20,7 +20,8 @@ DEFAULT_URL = "https://timothy-granger.github.io/tt-live-results/"
 DEFAULT_OUTPUT = Path("D:/TimeTrial_Refactor/race_results_qr.png")
 
 
-def generate_qr(url: str = DEFAULT_URL, output_path: Path = DEFAULT_OUTPUT) -> Path:
+def generate_qr(url: str = DEFAULT_URL, output_path: Path = DEFAULT_OUTPUT,
+                title: str = "SCAN FOR LIVE RESULTS") -> Path:
     """Generate a QR code with title text, suitable for printing."""
 
     # Generate QR code
@@ -55,7 +56,6 @@ def generate_qr(url: str = DEFAULT_URL, output_path: Path = DEFAULT_OUTPUT) -> P
         url_font = ImageFont.load_default()
 
     # Title
-    title = "SCAN FOR LIVE RESULTS"
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
     title_w = title_bbox[2] - title_bbox[0]
     draw.text(
@@ -87,4 +87,5 @@ def generate_qr(url: str = DEFAULT_URL, output_path: Path = DEFAULT_OUTPUT) -> P
 if __name__ == "__main__":
     url = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_URL
     output = Path(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_OUTPUT
-    generate_qr(url, output)
+    title = sys.argv[3] if len(sys.argv) > 3 else "SCAN FOR LIVE RESULTS"
+    generate_qr(url, output, title)
