@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Time Trial Series — Season Results</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #0a0a1a; color: #e8e8f0; min-height: 100vh; }
+.header { background: linear-gradient(135deg, #16213e 0%, #0f3460 100%); padding: 22px 20px;
+  text-align: center; border-bottom: 3px solid #e94560; }
+.header h1 { font-size: 21px; font-weight: 700; color: #fff; }
+.header .sub { font-size: 12px; color: #a8b8d0; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+.tabs { display: flex; background: #111128; border-bottom: 1px solid #252540; position: sticky; top: 0; z-index: 5; }
+.tab { flex: 1; padding: 13px 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #6070a0;
+  text-align: center; border-bottom: 3px solid transparent; transition: all 0.2s; }
+.tab:hover { color: #a0b0d0; }
+.tab.active { color: #fff; border-bottom-color: #e94560; }
+.content { padding: 16px; max-width: 900px; margin: 0 auto; }
+.race-title { font-size: 18px; font-weight: 700; color: #e94560; margin: 26px 0 10px;
+  padding-bottom: 6px; border-bottom: 2px solid #252540; }
+.race-title:first-child { margin-top: 4px; }
+.race-title .count { font-size: 12px; font-weight: 600; color: #8890a0; background: #16213e;
+  padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+.cat { font-size: 14px; font-weight: 700; color: #a0b0d0; margin: 16px 0 4px; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 6px; }
+thead th { text-align: left; padding: 7px 8px; background: #16213e; color: #a0b0d0; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #0f3460; }
+tbody td { padding: 7px 8px; border-bottom: 1px solid #1a1a35; }
+td.pos { color: #8890a0; width: 34px; }
+td.time { font-family: 'Consolas','Courier New',monospace; color: #81c784; white-space: nowrap; }
+td.rider { font-weight: 600; }
+td.cat-cell { color: #a0b0d0; font-size: 13px; }
+.p1 { color: #ffd700 !important; font-weight: 700; }
+.p2 { color: #c0c0c0 !important; font-weight: 600; }
+.p3 { color: #cd7f32 !important; font-weight: 600; }
+.standings-link { display: block; max-width: 900px; margin: 30px auto 40px; text-align: center; }
+.standings-link a { display: inline-block; background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+  color: #ffd700; text-decoration: none; font-weight: 700; font-size: 15px; padding: 14px 22px;
+  border-radius: 10px; border: 1px solid #e94560; }
+.standings-link a:hover { background: #1a3a5c; }
+@media (max-width: 600px) {
+  .header h1 { font-size: 18px; } table { font-size: 13px; }
+  thead th, tbody td { padding: 6px 6px; } td.cat-cell { font-size: 12px; }
+}
+</style>
+</head><body>
+<div class="header">
+<h1>2026 Time Trial Series</h1>
+<div class="sub">Season Results &middot; All 4 Races</div>
+</div>
+<div class="tabs">
+<div class="tab active" data-view="overall">Overall</div>
+<div class="tab" data-view="category">By Category</div>
+</div>
+<div class="content">
+<div id="overall" class="view">
+<div class="race-title">Aug 27, 2026 <span class="count">13 finishers</span></div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th><th>Category</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:36.0</td><td class="rider p1">James Martin</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos p2">2</td><td class="time">23:57.9</td><td class="rider p2">Tyler Clem</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p3">3</td><td class="time">24:00.8</td><td class="rider p3">Neil Tabor</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">4</td><td class="time">24:59.8</td><td class="rider ">Sam Shimanskiy</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">5</td><td class="time">25:24.3</td><td class="rider ">Jonathan Pait</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">6</td><td class="time">27:23.2</td><td class="rider ">Kayla Rector</td><td class="cat-cell">Women (4/U)</td></tr>
+<tr><td class="pos ">7</td><td class="time">28:26.7</td><td class="rider ">Ethan Thompson</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">8</td><td class="time">29:21.8</td><td class="rider ">Randall Tyner</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">9</td><td class="time">30:28.1</td><td class="rider ">Glynn Clements</td><td class="cat-cell">Masters 70+ - Men</td></tr>
+<tr><td class="pos ">10</td><td class="time">30:35.5</td><td class="rider ">Grant Hiriak</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">11</td><td class="time">30:49.6</td><td class="rider ">Chris Hartzler</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">12</td><td class="time">31:27.3</td><td class="rider ">Michelle Edwards</td><td class="cat-cell">Masters 60+ - Women</td></tr>
+<tr><td class="pos ">13</td><td class="time">34:49.7</td><td class="rider ">Dave Hiriak</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+</tbody></table></div>
+<div class="race-title">Jul 30, 2026 <span class="count">17 finishers</span></div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th><th>Category</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:21.0</td><td class="rider p1">Colin Mathern</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p2">2</td><td class="time">21:28.2</td><td class="rider p2">Chris Olson</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p3">3</td><td class="time">23:07.3</td><td class="rider p3">Tyler Clem</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos ">4</td><td class="time">23:26.9</td><td class="rider ">James Martin</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">5</td><td class="time">24:03.6</td><td class="rider ">Matthew Mauhar</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">6</td><td class="time">24:56.2</td><td class="rider ">Bill Radler</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">7</td><td class="time">25:47.3</td><td class="rider ">Clint Swofford</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">8</td><td class="time">26:04.5</td><td class="rider ">Jonathan Pait</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">9</td><td class="time">27:23.4</td><td class="rider ">Daniel Leedy</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">10</td><td class="time">27:30.9</td><td class="rider ">Kayla Rector</td><td class="cat-cell">Women (4/U)</td></tr>
+<tr><td class="pos ">11</td><td class="time">27:34.1</td><td class="rider ">Jerry Brown</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">12</td><td class="time">28:58.5</td><td class="rider ">Ethan Thompson</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">13</td><td class="time">30:05.0</td><td class="rider ">Christopher Octa</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">14</td><td class="time">31:09.8</td><td class="rider ">Glynn Clements</td><td class="cat-cell">Masters 70+ - Men</td></tr>
+<tr><td class="pos ">15</td><td class="time">31:21.8</td><td class="rider ">Grant Hiriak</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">16</td><td class="time">32:25.8</td><td class="rider ">Michelle Edwards</td><td class="cat-cell">Masters 60+ - Women</td></tr>
+<tr><td class="pos ">17</td><td class="time">32:43.2</td><td class="rider ">Chris Hartzler</td><td class="cat-cell">Men (4/5/U)</td></tr>
+</tbody></table></div>
+<div class="race-title">Jun 25, 2026 <span class="count">21 finishers</span></div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th><th>Category</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:41.2</td><td class="rider p1">Colin Mathern</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p2">2</td><td class="time">22:25.3</td><td class="rider p2">Coleman Hunt</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p3">3</td><td class="time">22:37.4</td><td class="rider p3">Michael Mauhar</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos ">4</td><td class="time">22:58.4</td><td class="rider ">Marcus Jones</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos ">5</td><td class="time">23:06.9</td><td class="rider ">Tyler Clem</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos ">6</td><td class="time">23:35.0</td><td class="rider ">James Martin</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">7</td><td class="time">24:49.8</td><td class="rider ">Matthew Mauhar</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">8</td><td class="time">25:10.8</td><td class="rider ">Brock Helms</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">9</td><td class="time">25:34.6</td><td class="rider ">Clint Swofford</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">10</td><td class="time">26:12.8</td><td class="rider ">Weston Studer</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">11</td><td class="time">26:32.1</td><td class="rider ">David Hoenicke</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">12</td><td class="time">28:18.5</td><td class="rider ">Kayla Rector</td><td class="cat-cell">Women (4/U)</td></tr>
+<tr><td class="pos ">13</td><td class="time">28:27.3</td><td class="rider ">Reggie Frye</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">14</td><td class="time">28:28.3</td><td class="rider ">Kevin Parker</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">15</td><td class="time">28:36.3</td><td class="rider ">Dave McQuaid</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">16</td><td class="time">29:09.5</td><td class="rider ">Mike Askew</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">17</td><td class="time">31:54.7</td><td class="rider ">Glynn Clements</td><td class="cat-cell">Masters 70+ - Men</td></tr>
+<tr><td class="pos ">18</td><td class="time">31:56.6</td><td class="rider ">Amanda Pospischil</td><td class="cat-cell">Women (4/U)</td></tr>
+<tr><td class="pos ">19</td><td class="time">33:07.7</td><td class="rider ">Michelle Edwards</td><td class="cat-cell">Masters 60+ - Women</td></tr>
+<tr><td class="pos ">20</td><td class="time">36:43.6</td><td class="rider ">Anna Tabor</td><td class="cat-cell">Juniors (F)</td></tr>
+<tr><td class="pos ">21</td><td class="time">42:00.8</td><td class="rider ">Brooke Tabor</td><td class="cat-cell">Juniors (F)</td></tr>
+</tbody></table></div>
+<div class="race-title">May 28, 2026 <span class="count">19 finishers</span></div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th><th>Category</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:31.2</td><td class="rider p1">Colin Mathern</td><td class="cat-cell">Men (P/1/2/3)</td></tr>
+<tr><td class="pos p2">2</td><td class="time">23:32.8</td><td class="rider p2">James Martin</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos p3">3</td><td class="time">24:40.1</td><td class="rider p3">Neil Tabor</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">4</td><td class="time">25:08.7</td><td class="rider ">Nathan Race</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">5</td><td class="time">25:22.0</td><td class="rider ">Samuel Shimanskiy</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">6</td><td class="time">25:48.0</td><td class="rider ">Clint Swofford</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">7</td><td class="time">26:47.2</td><td class="rider ">David Hoenicke</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">8</td><td class="time">26:58.8</td><td class="rider ">Weston Studer</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">9</td><td class="time">27:08.2</td><td class="rider ">Lucas Campbell</td><td class="cat-cell">Men (4/5/U)</td></tr>
+<tr><td class="pos ">10</td><td class="time">28:40.8</td><td class="rider ">Byron Meinerth</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">11</td><td class="time">29:17.7</td><td class="rider ">Kayla Rector</td><td class="cat-cell">Women (4/U)</td></tr>
+<tr><td class="pos ">12</td><td class="time">29:21.8</td><td class="rider ">Tara Miller</td><td class="cat-cell">Merckx - Women</td></tr>
+<tr><td class="pos ">13</td><td class="time">29:38.7</td><td class="rider ">Randy Tyner</td><td class="cat-cell">Masters 50+ - Men</td></tr>
+<tr><td class="pos ">14</td><td class="time">29:56.1</td><td class="rider ">Mike Askew</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">15</td><td class="time">32:23.6</td><td class="rider ">Chip Palmer</td><td class="cat-cell">Masters 60+ - Men</td></tr>
+<tr><td class="pos ">16</td><td class="time">33:05.8</td><td class="rider ">Michelle Edwards</td><td class="cat-cell">Masters 60+ - Women</td></tr>
+<tr><td class="pos ">17</td><td class="time">33:06.1</td><td class="rider ">Jay Patel</td><td class="cat-cell">Merckx - Men</td></tr>
+<tr><td class="pos ">18</td><td class="time">33:15.5</td><td class="rider ">Glynn Clements</td><td class="cat-cell">Masters 70+ - Men</td></tr>
+<tr><td class="pos ">19</td><td class="time">34:34.8</td><td class="rider ">Boyd Owens</td><td class="cat-cell">Merckx - Men</td></tr>
+</tbody></table></div>
+</div>
+<div id="category" class="view" style="display:none">
+<div class="race-title">Aug 27, 2026</div>
+<div class="cat">Masters 50+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">29:21.8</td><td class="rider p1">Randall Tyner</td></tr>
+<tr><td class="pos p2">2</td><td class="time">34:49.7</td><td class="rider p2">Dave Hiriak</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:36.0</td><td class="rider p1">James Martin</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Women</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">31:27.3</td><td class="rider p1">Michelle Edwards</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 70+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">30:28.1</td><td class="rider p1">Glynn Clements</td></tr>
+</tbody></table></div>
+<div class="cat">Men (4/5/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">24:00.8</td><td class="rider p1">Neil Tabor</td></tr>
+<tr><td class="pos p2">2</td><td class="time">30:49.6</td><td class="rider p2">Chris Hartzler</td></tr>
+</tbody></table></div>
+<div class="cat">Men (P/1/2/3)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:57.9</td><td class="rider p1">Tyler Clem</td></tr>
+</tbody></table></div>
+<div class="cat">Merckx - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">24:59.8</td><td class="rider p1">Sam Shimanskiy</td></tr>
+<tr><td class="pos p2">2</td><td class="time">25:24.3</td><td class="rider p2">Jonathan Pait</td></tr>
+<tr><td class="pos p3">3</td><td class="time">28:26.7</td><td class="rider p3">Ethan Thompson</td></tr>
+<tr><td class="pos ">4</td><td class="time">30:35.5</td><td class="rider ">Grant Hiriak</td></tr>
+</tbody></table></div>
+<div class="cat">Women (4/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">27:23.2</td><td class="rider p1">Kayla Rector</td></tr>
+</tbody></table></div>
+<div class="race-title">Jul 30, 2026</div>
+<div class="cat">Masters 60+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:26.9</td><td class="rider p1">James Martin</td></tr>
+<tr><td class="pos p2">2</td><td class="time">24:56.2</td><td class="rider p2">Bill Radler</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Women</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">32:25.8</td><td class="rider p1">Michelle Edwards</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 70+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">31:09.8</td><td class="rider p1">Glynn Clements</td></tr>
+</tbody></table></div>
+<div class="cat">Men (4/5/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">25:47.3</td><td class="rider p1">Clint Swofford</td></tr>
+<tr><td class="pos p2">2</td><td class="time">27:34.1</td><td class="rider p2">Jerry Brown</td></tr>
+<tr><td class="pos p3">3</td><td class="time">30:05.0</td><td class="rider p3">Christopher Octa</td></tr>
+<tr><td class="pos ">4</td><td class="time">32:43.2</td><td class="rider ">Chris Hartzler</td></tr>
+</tbody></table></div>
+<div class="cat">Men (P/1/2/3)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:21.0</td><td class="rider p1">Colin Mathern</td></tr>
+<tr><td class="pos p2">2</td><td class="time">21:28.2</td><td class="rider p2">Chris Olson</td></tr>
+<tr><td class="pos p3">3</td><td class="time">23:07.3</td><td class="rider p3">Tyler Clem</td></tr>
+</tbody></table></div>
+<div class="cat">Merckx - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">24:03.6</td><td class="rider p1">Matthew Mauhar</td></tr>
+<tr><td class="pos p2">2</td><td class="time">26:04.5</td><td class="rider p2">Jonathan Pait</td></tr>
+<tr><td class="pos p3">3</td><td class="time">27:23.4</td><td class="rider p3">Daniel Leedy</td></tr>
+<tr><td class="pos ">4</td><td class="time">28:58.5</td><td class="rider ">Ethan Thompson</td></tr>
+<tr><td class="pos ">5</td><td class="time">31:21.8</td><td class="rider ">Grant Hiriak</td></tr>
+</tbody></table></div>
+<div class="cat">Women (4/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">27:30.9</td><td class="rider p1">Kayla Rector</td></tr>
+</tbody></table></div>
+<div class="race-title">Jun 25, 2026</div>
+<div class="cat">Juniors (F)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">36:43.6</td><td class="rider p1">Anna Tabor</td></tr>
+<tr><td class="pos p2">2</td><td class="time">42:00.8</td><td class="rider p2">Brooke Tabor</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 50+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">26:32.1</td><td class="rider p1">David Hoenicke</td></tr>
+<tr><td class="pos p2">2</td><td class="time">28:27.3</td><td class="rider p2">Reggie Frye</td></tr>
+<tr><td class="pos p3">3</td><td class="time">28:36.3</td><td class="rider p3">Dave McQuaid</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:35.0</td><td class="rider p1">James Martin</td></tr>
+<tr><td class="pos p2">2</td><td class="time">28:28.3</td><td class="rider p2">Kevin Parker</td></tr>
+<tr><td class="pos p3">3</td><td class="time">29:09.5</td><td class="rider p3">Mike Askew</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Women</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">33:07.7</td><td class="rider p1">Michelle Edwards</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 70+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">31:54.7</td><td class="rider p1">Glynn Clements</td></tr>
+</tbody></table></div>
+<div class="cat">Men (4/5/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">25:34.6</td><td class="rider p1">Clint Swofford</td></tr>
+<tr><td class="pos p2">2</td><td class="time">26:12.8</td><td class="rider p2">Weston Studer</td></tr>
+</tbody></table></div>
+<div class="cat">Men (P/1/2/3)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:41.2</td><td class="rider p1">Colin Mathern</td></tr>
+<tr><td class="pos p2">2</td><td class="time">22:25.3</td><td class="rider p2">Coleman Hunt</td></tr>
+<tr><td class="pos p3">3</td><td class="time">22:37.4</td><td class="rider p3">Michael Mauhar</td></tr>
+<tr><td class="pos ">4</td><td class="time">22:58.4</td><td class="rider ">Marcus Jones</td></tr>
+<tr><td class="pos ">5</td><td class="time">23:06.9</td><td class="rider ">Tyler Clem</td></tr>
+</tbody></table></div>
+<div class="cat">Merckx - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">24:49.8</td><td class="rider p1">Matthew Mauhar</td></tr>
+<tr><td class="pos p2">2</td><td class="time">25:10.8</td><td class="rider p2">Brock Helms</td></tr>
+</tbody></table></div>
+<div class="cat">Women (4/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">28:18.5</td><td class="rider p1">Kayla Rector</td></tr>
+<tr><td class="pos p2">2</td><td class="time">31:56.6</td><td class="rider p2">Amanda Pospischil</td></tr>
+</tbody></table></div>
+<div class="race-title">May 28, 2026</div>
+<div class="cat">Masters 50+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">26:47.2</td><td class="rider p1">David Hoenicke</td></tr>
+<tr><td class="pos p2">2</td><td class="time">29:38.7</td><td class="rider p2">Randy Tyner</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">23:32.8</td><td class="rider p1">James Martin</td></tr>
+<tr><td class="pos p2">2</td><td class="time">29:56.1</td><td class="rider p2">Mike Askew</td></tr>
+<tr><td class="pos p3">3</td><td class="time">32:23.6</td><td class="rider p3">Chip Palmer</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 60+ - Women</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">33:05.8</td><td class="rider p1">Michelle Edwards</td></tr>
+</tbody></table></div>
+<div class="cat">Masters 70+ - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">33:15.5</td><td class="rider p1">Glynn Clements</td></tr>
+</tbody></table></div>
+<div class="cat">Men (4/5/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">24:40.1</td><td class="rider p1">Neil Tabor</td></tr>
+<tr><td class="pos p2">2</td><td class="time">25:48.0</td><td class="rider p2">Clint Swofford</td></tr>
+<tr><td class="pos p3">3</td><td class="time">26:58.8</td><td class="rider p3">Weston Studer</td></tr>
+<tr><td class="pos ">4</td><td class="time">27:08.2</td><td class="rider ">Lucas Campbell</td></tr>
+</tbody></table></div>
+<div class="cat">Men (P/1/2/3)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">21:31.2</td><td class="rider p1">Colin Mathern</td></tr>
+</tbody></table></div>
+<div class="cat">Merckx - Men</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">25:08.7</td><td class="rider p1">Nathan Race</td></tr>
+<tr><td class="pos p2">2</td><td class="time">25:22.0</td><td class="rider p2">Samuel Shimanskiy</td></tr>
+<tr><td class="pos p3">3</td><td class="time">28:40.8</td><td class="rider p3">Byron Meinerth</td></tr>
+<tr><td class="pos ">4</td><td class="time">33:06.1</td><td class="rider ">Jay Patel</td></tr>
+<tr><td class="pos ">5</td><td class="time">34:34.8</td><td class="rider ">Boyd Owens</td></tr>
+</tbody></table></div>
+<div class="cat">Merckx - Women</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">29:21.8</td><td class="rider p1">Tara Miller</td></tr>
+</tbody></table></div>
+<div class="cat">Women (4/U)</div>
+<div class="tablewrap"><table>
+<thead><tr><th>#</th><th>Time</th><th>Rider</th></tr></thead><tbody>
+<tr><td class="pos p1">1</td><td class="time">29:17.7</td><td class="rider p1">Kayla Rector</td></tr>
+</tbody></table></div>
+</div>
+</div>
+<div class="standings-link">
+<a href="https://timothy-granger.github.io/tt-live-results/standings-2026.html">🏆 View 2026 Series Standings →</a>
+</div>
+<script>
+document.querySelectorAll('.tab').forEach(function (t) {
+  t.addEventListener('click', function () {
+    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+    t.classList.add('active');
+    var view = t.dataset.view;
+    document.getElementById('overall').style.display = (view === 'overall') ? '' : 'none';
+    document.getElementById('category').style.display = (view === 'category') ? '' : 'none';
+  });
+});
+</script>
+</body></html>
